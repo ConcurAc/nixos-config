@@ -1,0 +1,7 @@
+keys:
+  - &connor age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
+creation_rules:
+  - path_regex: users/connor/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+          - *connor
