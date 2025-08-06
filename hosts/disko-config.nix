@@ -7,8 +7,8 @@
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
-              name = "ESP";
+            boot = {
+              name = "boot";
               type = "EF00";
               start = "1M";
               end = "512M";
@@ -23,7 +23,6 @@
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ];
                 subvolumes = {
                   "/@" = {
                     mountpoint = "/";
