@@ -48,5 +48,16 @@
           ./users/connor
         ];
       };
+
+      nixosConfigurations.slave = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/slave.nix
+          ./configuration.nix
+
+          ./users/connor
+        ];
+      };
     };
 }
