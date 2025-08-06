@@ -46,7 +46,7 @@
   disko.devices = {
     disk = {
       internal = {
-        device = "/dev/sda";
+        device = "/dev/mmcblk0";
         type = "disk";
         content = {
           type = "gpt";
