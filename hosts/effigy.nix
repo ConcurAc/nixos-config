@@ -76,12 +76,6 @@
   networking = {
     hostName = "effigy";
     networkmanager.enable = true;
-    nat = {
-      enable = true;
-      internalInterfaces = [ "ve-+" ];
-      externalInterface = "enp3s0";
-      enableIPv6 = true;
-    };
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
