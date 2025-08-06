@@ -17,14 +17,8 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, home-manager, ... }:
+    inputs@{ nixpkgs, ... }:
     {
-      home-manager = {
-        useGlobalPkgs = true;
-        sharedModules = with inputs; [
-          sops.homeManagerModules.sops
-        ];
-      };
       nixosConfiguration.effigy = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
