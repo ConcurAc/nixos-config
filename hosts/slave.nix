@@ -35,10 +35,7 @@
     kernelParams = [ "quiet" ];
 
     loader = {
-      grub = {
-        efiSupport = true;
-        device = "nodev";
-      };
+      grub.efiSupport = true;
       efi.canTouchEfiVariables = true;
     };
 
