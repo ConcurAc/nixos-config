@@ -19,7 +19,7 @@
   outputs =
     inputs@{ nixpkgs, ... }:
     {
-      nixosConfiguration.effigy = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.effigy = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
