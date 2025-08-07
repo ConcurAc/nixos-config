@@ -34,9 +34,10 @@
       ];
       kernelModules = [ "dm-snapshot" ];
     };
-    kernelModules = [
+    kernelModules = if (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") then [
+      "kvm-intel" "hp-wmi"
+    ] else [
       "kvm-intel"
-      (lib.mkIf (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") "hp-wmi")
     ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "quiet" ];
@@ -87,9 +88,19 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    nvidia.prime = {
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
+    nvidia = {
+      open = true;
+      nvidiaSettings = false;
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
     };
   };
+
+  services.xserver.videoDrivers = ["nvidia"];
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "nvidia-x11"
+  ];
 }
