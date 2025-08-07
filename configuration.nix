@@ -4,10 +4,6 @@
 
 { pkgs, ... }:
 {
-  imports = [
-    ./modules/terminal.nix
-  ];
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"

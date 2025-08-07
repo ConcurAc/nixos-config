@@ -25,6 +25,7 @@
         modules = [
           ./hosts/effigy.nix
           ./configuration.nix
+          ./modules/terminal.nix
           ./modules/desktop/hyprland.nix
 
           ./users/connor
@@ -37,7 +38,10 @@
         modules = [
           ./hosts/hub.nix
           ./configuration.nix
+          ./modules/terminal.nix
+
           ./modules/desktop/gnome.nix
+          ./modules/desktop/hyprland.nix
 
           ./users/connor
         ];
