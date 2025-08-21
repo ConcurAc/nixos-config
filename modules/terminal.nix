@@ -61,8 +61,8 @@
         yazi = {
           mgr.ratio = [
             2
-            3
             4
+            3
           ];
           plugin.prepend_previewers = [
             {
@@ -99,6 +99,21 @@
               run = "plugin restore";
               desc = "restore last trashed files/folders";
             }
+            {
+              on = [ "z" "h" ];
+              run = "plugin time-travel --args=prev";
+              desc = "go to previous snapshot";
+            }
+            {
+              on = [ "z" "l" ];
+              run = "plugin time-travel --args=next";
+              desc = "go to next snapshot";
+            }
+            {
+              on = [ "z" "e" ];
+              run = "plugin time-travel --args=exit";
+              desc = "stop browsing snapshots";
+            }
           ];
         };
       };
@@ -106,9 +121,12 @@
         restore = restore;
         mount = mount;
         rich-preview = rich-preview;
+        time-travel = time-travel;
       };
     };
   };
 
-  services.udisks2.enable = true;
+  environment.systemPackages = with pkgs; [
+    trash-cli
+  ];
 }
