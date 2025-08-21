@@ -54,6 +54,8 @@
     tlrc
 
     msedit
+
+    sops
   ];
 
   programs = {
