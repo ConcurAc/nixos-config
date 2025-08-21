@@ -25,7 +25,7 @@
     defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets.openvpn = {};
-  }
+  };
 
   boot = {
     initrd.availableKernelModules = [
@@ -38,6 +38,7 @@
     ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "quiet" ];
+    supportedFilesystems = [ "nfs" ];
 
     loader = {
       grub.efiSupport = true;
@@ -51,7 +52,7 @@
 
   disko.devices = {
     disk = {
-      internal = {
+      eMMC = {
         device = "/dev/mmcblk0";
         type = "disk";
         content = {
@@ -90,6 +91,36 @@
     };
   };
 
+  systemd.mounts = [
+    {
+      type = "nfs";
+      what = "server:/archives";
+      where = "/mnt/archives";
+    }
+    {
+      type = "nfs";
+      what = "server:/media";
+      where = "/mnt/media";
+    }
+  ];
+
+  systemd.automounts = [
+    {
+      wantedBy = [ "multi-user.target" ];
+      automountConfig = {
+        TimeoutIdleSec = "600";
+      };
+      where = "/mnt/archives";
+    }
+    {
+      wantedBy = [ "multi-user.target" ];
+      automountConfig = {
+        TimeoutIdleSec = "600";
+      };
+      where = "/mnt/media";
+    }
+  ];
+
   networking = {
     hostName = "cadence";
     networkmanager.enable = true;
@@ -97,7 +128,6 @@
 
   services = {
     openvpn = {
-      enable = true;
       servers = {
         proxy.config = "config ${config.sops.secrets.openvpn.path}";
       };

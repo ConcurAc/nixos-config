@@ -88,4 +88,27 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+    oci-containers.containers = {
+      invoke-ai = {
+        image = "ghcr.io/invoke-ai/invokeai";
+        hostname = "models.invoke.ai";
+        ports = [
+          "127.0.0.1:9090:9090"
+        ];
+        volumes = [
+          "invoke-ai:/invokeai"
+        ];
+        extraOptions = [
+          "--gpus=all"
+        ];
+      };
+    };
+  };
 }

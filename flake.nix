@@ -23,7 +23,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/effigy.nix
+          ./hosts/effigy
           ./configuration.nix
           ./modules/terminal.nix
           ./modules/desktop/hyprland.nix
@@ -36,12 +36,11 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/hub.nix
+          ./hosts/hub
           ./configuration.nix
           ./modules/terminal.nix
 
           ./modules/desktop/gnome.nix
-          ./modules/desktop/hyprland.nix
 
           ./users/connor
         ];
@@ -51,7 +50,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/cadence.nix
+          ./hosts/cadence
           ./configuration.nix
         ];
       };

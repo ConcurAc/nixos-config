@@ -6,7 +6,7 @@ creation_rules:
     key_groups:
       - age:
           - *connor
-  - path_regex: hosts/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: hosts/cadence/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *connor
