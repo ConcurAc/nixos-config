@@ -41,7 +41,10 @@
     supportedFilesystems = [ "nfs" ];
 
     loader = {
-      grub.efiSupport = true;
+      grub = {
+        device = "nodev";
+        efiSupport = true;
+      };
       efi.canTouchEfiVariables = true;
     };
 

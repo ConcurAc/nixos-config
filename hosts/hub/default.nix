@@ -37,8 +37,8 @@
 
     loader = {
       grub = {
-        efiSupport = true;
         device = "nodev";
+        efiSupport = true;
       };
       efi.canTouchEfiVariables = true;
     };
