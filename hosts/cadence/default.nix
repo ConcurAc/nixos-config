@@ -24,7 +24,10 @@
   sops = {
     defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/root/.config/sops/age/keys.txt";
-    secrets.openvpn = {};
+    secrets = {
+      passwd.neededForUsers = true;
+      openvpn = {};
+    };
   };
 
   boot = {
@@ -50,8 +53,6 @@
 
     tmp.useZram = true;
   };
-
-  zramSwap.enable = true;
 
   disko.devices = {
     disk = {
@@ -127,6 +128,11 @@
   networking = {
     hostName = "cadence";
     networkmanager.enable = true;
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault true;
   };
 
   services = {
@@ -141,11 +147,9 @@
     };
   };
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
+  zramSwap.enable = true;
+
+  users.users.root.hashedPasswordFile = config.sops.secrets.passwd.path;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
