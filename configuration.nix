@@ -51,6 +51,9 @@
     delta
     sd
     dust
+    tlrc
+
+    msedit
   ];
 
   programs = {
