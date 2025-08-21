@@ -142,14 +142,20 @@
       };
     };
     deluge = {
-     enable = true;
-     web.enable = true;
+      enable = true;
+      web = {
+        enable = true;
+        openFirewall = true;
+      };
     };
   };
 
   zramSwap.enable = true;
 
-  users.users.root.hashedPasswordFile = config.sops.secrets.passwd.path;
+  users = {
+    mutableUsers = false;
+    users.root.hashedPasswordFile = config.sops.secrets.passwd.path;
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
