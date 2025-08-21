@@ -27,6 +27,7 @@
     secrets = {
       passwd.neededForUsers = true;
       openvpn = {};
+      deluge-auth = {};
     };
   };
 
@@ -143,6 +144,8 @@
     };
     deluge = {
       enable = true;
+      declarative = true;
+      authFile = config.sops.secrets.deluge-auth.path;
       web = {
         enable = true;
         openFirewall = true;
