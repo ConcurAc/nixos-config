@@ -5,12 +5,9 @@
       enable = true;
       withUWSM = true;
     };
-    hyprlock.enable = true;
   };
 
   services = {
-    hypridle.enable = true;
-
     pipewire.enable = true;
 
     # Enable login manager
