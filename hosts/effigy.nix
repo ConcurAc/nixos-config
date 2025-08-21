@@ -46,6 +46,7 @@
       grub = {
         efiSupport = true;
         device = "nodev";
+        useOSProber = true;
       };
       efi.canTouchEfiVariables = true;
     };
@@ -76,31 +77,59 @@
 
   networking = {
     hostName = "effigy";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      wifi = {
+        backend = "iwd";
+        powersave = true;
+      };
+    };
+
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault true;
   };
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
+  services = {
+    xserver.videoDrivers = [ "nvidia" "intel" ];
+    power-profiles-daemon.enable = true;
+    udisks2.enable = true;
+    upower.enable = true;
+  };
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs = {
+    hostPlatform = lib.mkDefault "x86_64-linux";
+    config.allowUnfree = true;
+   };
+
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    bluetooth.enable = true;
+    graphics.enable = true;
     nvidia = {
       open = true;
+      modesetting.enable = true;
       nvidiaSettings = false;
       prime = {
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
       };
+      powerManagement = {
+        enable = true;
+        finegrained = true;
+      };
     };
+    nvidia-container-toolkit.enable = true;
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
-
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "nvidia-x11"
-  ];
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
 }
