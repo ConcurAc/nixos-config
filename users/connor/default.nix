@@ -11,6 +11,7 @@
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "${config.users.users.connor.home}/.config/sops/age/keys.txt";
     secrets = {
       passwd.neededForUsers = true;
     };
