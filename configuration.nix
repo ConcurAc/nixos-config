@@ -30,11 +30,12 @@
     ];
   };
 
+  security.sudo-rs.enable = true;
+
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
-    sudo-rs
 
     wget
     curl
@@ -61,6 +62,7 @@
   programs = {
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.
+    git.enable = true;
     mtr.enable = true;
     gnupg.agent = {
       enable = true;
