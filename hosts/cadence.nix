@@ -13,12 +13,19 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       disko.nixosModules.disko
+      sops-nix.nixosModules.sops
     ]
     ++ (with nixos-hardware.nixosModules; [
       common-cpu-intel
       common-pc
       common-pc-ssd
     ]);
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "/root/.config/sops/age/keys.txt";
+    secrets.openvpn = {};
+  }
 
   boot = {
     initrd.availableKernelModules = [
@@ -88,9 +95,17 @@
     networkmanager.enable = true;
   };
 
-  services.deluge = {
-    enable = true;
-    web.enable = true;
+  services = {
+    openvpn = {
+      enable = true;
+      servers = {
+        proxy.config = "config ${config.sops.secrets.openvpn.path}";
+      };
+    };
+    deluge = {
+     enable = true;
+     web.enable = true;
+    };
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

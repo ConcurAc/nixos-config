@@ -1,7 +1,13 @@
 keys:
   - &connor age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
+  - &cadence age1jr3lgf5xcjqyazx5ke9c4rv5pqqfc6vzlj0wgt0sx6yxpl0luqesw2q85c
 creation_rules:
   - path_regex: users/connor/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *connor
+  - path_regex: hosts/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+          - *connor
+          - *cadence
