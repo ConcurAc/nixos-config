@@ -47,14 +47,12 @@
         ];
       };
 
-      nixosConfigurations.slave = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.cadence = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/slave.nix
+          ./hosts/cadence.nix
           ./configuration.nix
-
-          ./users/connor
         ];
       };
     };
