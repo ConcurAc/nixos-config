@@ -153,6 +153,7 @@
     };
     slskd = {
       enable = true;
+      domain = "medicate";
       settings.shares.directories = [
         "/mnt/media/music"
       ];
