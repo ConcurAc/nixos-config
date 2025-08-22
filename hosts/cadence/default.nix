@@ -31,10 +31,6 @@
         format = "binary";
         sopsFile = ./proxy.ovpn;
       };
-      slskd-env = {
-        format = "binary";
-        sopsFile = ./slskd.env;
-      };
     };
   };
 
@@ -157,14 +153,6 @@
         enable = true;
         openFirewall = true;
       };
-    };
-    slskd = {
-      enable = true;
-      domain = "medicate";
-      environmentFile = config.sops.secrets.slskd-env.path;
-      settings.shares.directories = [
-        "/mnt/media/music"
-      ];
     };
   };
 
