@@ -102,36 +102,52 @@
     };
   };
 
-  systemd.mounts = [
-    {
-      type = "nfs";
-      what = "server:/archives";
-      where = "/mnt/archives";
-    }
-    {
-      type = "nfs";
-      what = "server:/media";
-      where = "/mnt/media";
-    }
-  ];
+  systemd = {
+    mounts = [
+      {
+        type = "nfs";
+        what = "server:/archives";
+        where = "/mnt/archives";
+      }
+      {
+        type = "nfs";
+        what = "server:/media";
+        where = "/mnt/media";
+      }
+    ];
 
-  systemd.automounts = [
-    {
+    automounts = [
+      {
+        wantedBy = [ "multi-user.target" ];
+        automountConfig = {
+          TimeoutIdleSec = "600";
+        };
+        where = "/mnt/archives";
+      }
+      {
+        wantedBy = [ "multi-user.target" ];
+        automountConfig = {
+          TimeoutIdleSec = "600";
+        };
+        where = "/mnt/media";
+      }
+    ];
+    services.launch-rqbit = {
+      description = "starts rqbit server";
+      script = ''
+        rqbit server start /mnt/archives
+      '';
       wantedBy = [ "multi-user.target" ];
-      automountConfig = {
-        TimeoutIdleSec = "600";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
       };
-      where = "/mnt/archives";
-    }
-    {
-      wantedBy = [ "multi-user.target" ];
-      automountConfig = {
-        TimeoutIdleSec = "600";
-      };
-      where = "/mnt/media";
-    }
-  ];
+    };
+  };
 
+  environment.systemPackages = with pkgs; [
+    rqbit
+  ];
   networking = {
     hostName = "cadence";
     networkmanager.enable = true;
