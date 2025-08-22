@@ -132,18 +132,7 @@
         where = "/mnt/media";
       }
     ];
-    services.rqbit = {
-      description = "starts rqbit server";
-      script = ''
-        ${pkgs.rqbit}/bin/rqbit server start /mnt/archives
-      '';
-      wantedBy = [ "multi-user.target" ];
-    };
   };
-
-  environment.systemPackages = with pkgs; [
-    rqbit
-  ];
 
   networking = {
     hostName = "cadence";
@@ -153,7 +142,6 @@
     # still possible to use this option, but it's recommended to use it in conjunction
     # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
     useDHCP = lib.mkDefault true;
-    firewall.allowedUDPPorts = [ 3030 ];
   };
 
   services = {
