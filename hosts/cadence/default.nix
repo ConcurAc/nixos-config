@@ -151,6 +151,12 @@
         openFirewall = true;
       };
     };
+    slskd = {
+      enable = true;
+      settings.shares.directories = [
+        "/mnt/media/music"
+      ];
+    };
   };
 
   zramSwap.enable = true;
