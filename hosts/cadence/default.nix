@@ -26,9 +26,15 @@
     age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets = {
       passwd.neededForUsers = true;
-      proxy.sopsFile = ./proxy.ovpn;
       deluge-auth = {};
-      slskd-env.sopsFile = ./slskd.env;
+      proxy = {
+        format = "binary";
+        sopsFile = ./proxy.ovpn;
+      };
+      slskd-env = {
+        format = "binary";
+        sopsFile = ./slskd.env;
+      };
     };
   };
 
