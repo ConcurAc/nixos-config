@@ -142,7 +142,10 @@
   services = {
     openvpn = {
       servers = {
-        proxy.config = "config ${config.sops.secrets.proxy.path}";
+        proxy = {
+          config = "config ${config.sops.secrets.proxy.path}";
+          updateResolvConf = true;
+        };
       };
     };
     deluge = {
