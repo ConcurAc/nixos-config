@@ -26,8 +26,9 @@
     age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets = {
       passwd.neededForUsers = true;
-      openvpn = {};
+      proxy.sopsFile = ./proxy.ovpn;
       deluge-auth = {};
+      slskd-env.sopsFile = ./slskd.env;
     };
   };
 
@@ -139,7 +140,7 @@
   services = {
     openvpn = {
       servers = {
-        proxy.config = "config ${config.sops.secrets.openvpn.path}";
+        proxy.config = "config ${config.sops.secrets.proxy.path}";
       };
     };
     deluge = {
@@ -154,6 +155,7 @@
     slskd = {
       enable = true;
       domain = "medicate";
+      environmentFile = config.sops.secrets.slskd-env.path;
       settings.shares.directories = [
         "/mnt/media/music"
       ];
