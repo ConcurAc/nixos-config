@@ -26,7 +26,10 @@
     age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets = {
       passwd.neededForUsers = true;
-      deluge-auth = {};
+      deluge-auth = {
+        owner = "deluge";
+        group = "deluge";
+      };
       proxy = {
         format = "binary";
         sopsFile = ./proxy.conf;
