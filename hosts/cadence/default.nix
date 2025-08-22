@@ -140,17 +140,12 @@
   };
 
   services = {
-    openvpn = {
-      servers = {
-        proxy = {
-          config = "config ${config.sops.secrets.proxy.path}";
-        };
-      };
-    };
+    openvpn.servers.proxy.config = "config ${config.sops.secrets.proxy.path}";
     deluge = {
       enable = true;
       declarative = true;
       authFile = config.sops.secrets.deluge-auth.path;
+      openFirewall = true;
       web = {
         enable = true;
         openFirewall = true;
