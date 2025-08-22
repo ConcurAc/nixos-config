@@ -156,7 +156,7 @@
     # still possible to use this option, but it's recommended to use it in conjunction
     # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
     useDHCP = lib.mkDefault true;
-    allowedUDPPorts = [ 4020 3030 ];
+    firewall.allowedUDPPorts = [ 4020 3030 ];
   };
 
   services = {
