@@ -29,7 +29,7 @@
       deluge-auth = {};
       proxy = {
         format = "binary";
-        sopsFile = ./proxy.ovpn;
+        sopsFile = ./proxy.conf;
       };
     };
   };

@@ -6,7 +6,7 @@ creation_rules:
     key_groups:
       - age:
           - *connor
-  - path_regex: hosts/cadence/[^/]+\.(yaml|env|ovpn)$
+  - path_regex: hosts/cadence/[^/]+\.(yaml|env|conf)$
     key_groups:
       - age:
           - *connor
