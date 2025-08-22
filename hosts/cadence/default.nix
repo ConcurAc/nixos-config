@@ -135,7 +135,7 @@
     services.launch-rqbit = {
       description = "starts rqbit server";
       script = ''
-        rqbit server start /mnt/archives
+        ${pkgs.rqbit}/bin/rqbit server start /mnt/archives
       '';
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
@@ -145,9 +145,6 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    rqbit
-  ];
   networking = {
     hostName = "cadence";
     networkmanager.enable = true;
