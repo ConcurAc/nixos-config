@@ -132,15 +132,12 @@
         where = "/mnt/media";
       }
     ];
-    services.launch-rqbit = {
+    services.rqbit = {
       description = "starts rqbit server";
       script = ''
         ${pkgs.rqbit}/bin/rqbit server start /mnt/archives
       '';
       wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-      };
     };
   };
 
@@ -156,7 +153,7 @@
     # still possible to use this option, but it's recommended to use it in conjunction
     # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
     useDHCP = lib.mkDefault true;
-    firewall.allowedUDPPorts = [ 4020 3030 ];
+    firewall.allowedTCPPorts = [ 3030 ];
   };
 
   services = {
