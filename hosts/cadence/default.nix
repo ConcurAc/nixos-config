@@ -144,7 +144,6 @@
       servers = {
         proxy = {
           config = "config ${config.sops.secrets.proxy.path}";
-          updateResolvConf = true;
         };
       };
     };
