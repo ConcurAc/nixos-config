@@ -46,48 +46,71 @@
     tmp.useZram = true;
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/1cf0b225-6bee-411d-a7c2-54af812b0e99";
-    fsType = "btrfs";
-    options = [ "subvol=@" ];
+  disko.devices = {
+    disk = {
+      internal = {
+        device = "/dev/nvmen0p1";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              name = "boot";
+              type = "EF00";
+              start = "1M";
+              end = "512M";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
+              };
+            };
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                subvolumes = {
+                  "/@" = {
+                    mountpoint = "/";
+                  };
+                  "/@home" = {
+                    mountpoint = "/home";
+                  };
+                  "/@nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
   };
-
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/1cf0b225-6bee-411d-a7c2-54af812b0e99";
-    fsType = "btrfs";
-    options = [ "subvol=@home" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/1cf0b225-6bee-411d-a7c2-54af812b0e99";
-    fsType = "btrfs";
-    options = [ "compress=zstd,subvol=@nix" ];
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/2949-9621";
-    fsType = "vfat";
-    options = [
-      "fmask=0022"
-      "dmask=0022"
-    ];
-  };
-
-  zramSwap.enable = true;
 
   networking = {
     hostName = "hub";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd";
+    };
+
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault true;
   };
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  services = {
+    vaultwarden.enable = true;
+    syncthing.enable = true;
+  };
 
   virtualisation = {
     podman = {
@@ -111,4 +134,9 @@
       };
     };
   };
+
+  zramSwap.enable = true;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
