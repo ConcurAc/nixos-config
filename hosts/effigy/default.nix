@@ -15,7 +15,7 @@
     with inputs;
     [
       (modulesPath + "/installer/scan/not-detected.nix")
-      inputs.disko.nixosModules.disko
+      disko.nixosModules.disko
     ]
     ++ (with nixos-hardware.nixosModules; [
       common-cpu-intel
@@ -34,11 +34,16 @@
       ];
       kernelModules = [ "dm-snapshot" ];
     };
-    kernelModules = if (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") then [
-      "kvm-intel" "hp-wmi"
-    ] else [
-      "kvm-intel"
-    ];
+    kernelModules =
+      if (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") then
+        [
+          "kvm-intel"
+          "hp-wmi"
+        ]
+      else
+        [
+          "kvm-intel"
+        ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "quiet" ];
 
@@ -93,16 +98,24 @@
   };
 
   services = {
-    xserver.videoDrivers = [ "nvidia" "intel" ];
-    power-profiles-daemon.enable = true;
+    xserver.videoDrivers = [
+      "nvidia"
+      "intel"
+    ];
+    pipewire = {
+      enable = true;
+      jack.enable = true;
+    };
+
     udisks2.enable = true;
+    power-profiles-daemon.enable = true;
     upower.enable = true;
   };
 
   nixpkgs = {
     hostPlatform = lib.mkDefault "x86_64-linux";
     config.allowUnfree = true;
-   };
+  };
 
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
