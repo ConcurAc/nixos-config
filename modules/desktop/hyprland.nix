@@ -8,8 +8,6 @@
   };
 
   services = {
-    pipewire.enable = true;
-
     # Enable login manager
     greetd = {
       enable = true;
@@ -23,6 +21,6 @@
 
   # Add greeter
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    tuigreet
   ];
 }
