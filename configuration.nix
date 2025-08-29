@@ -37,6 +37,9 @@
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
 
+    nil
+    nixd
+
     wget
     curl
     openssh
