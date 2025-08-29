@@ -22,16 +22,15 @@
 
   boot = {
     initrd.availableKernelModules = [
-      "xhci_pci"
-      "ehci_pci"
-      "ahci"
       "nvme"
-      "usbhid"
+      "xhci_pci"
+      "ahci"
+      "thunderbolt"
       "usb_storage"
+      "usbhid"
       "sd_mod"
-      "sr_mod"
     ];
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-amd" ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "quiet" ];
 
