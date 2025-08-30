@@ -57,8 +57,6 @@
     dust
     tlrc
 
-    msedit
-
     sops
   ];
 

@@ -50,10 +50,7 @@
 
     tmux.enable = true;
 
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-    };
+    neovim.enable = true;
 
     yazi = {
       enable = true;
@@ -100,17 +97,26 @@
               desc = "restore last trashed files/folders";
             }
             {
-              on = [ "z" "h" ];
+              on = [
+                "z"
+                "h"
+              ];
               run = "plugin time-travel --args=prev";
               desc = "go to previous snapshot";
             }
             {
-              on = [ "z" "l" ];
+              on = [
+                "z"
+                "l"
+              ];
               run = "plugin time-travel --args=next";
               desc = "go to next snapshot";
             }
             {
-              on = [ "z" "e" ];
+              on = [
+                "z"
+                "e"
+              ];
               run = "plugin time-travel --args=exit";
               desc = "stop browsing snapshots";
             }
@@ -126,7 +132,12 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    trash-cli
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      trash-cli
+      msedit
+    ];
+    variables.EDITOR = "edit";
+  };
+
 }
