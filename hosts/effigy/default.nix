@@ -79,12 +79,7 @@
     fsType = "ext4";
   };
 
-  sops = {
-    gnupg = {
-      home = "/root/.gnupg";
-      sshKeyPaths = [ ];
-    };
-  };
+  sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   networking = {
     hostName = "effigy";

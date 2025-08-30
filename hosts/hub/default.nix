@@ -94,10 +94,7 @@
   };
 
   sops = {
-    gnupg = {
-      home = "/root/.gnupg";
-      sshKeyPaths = [ ];
-    };
+    age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets.root-passwd = {
       sopsFile = ./secrets.yaml;
       neededForUsers = true;
