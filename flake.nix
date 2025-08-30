@@ -43,6 +43,7 @@
           ./modules/desktop/gnome.nix
 
           ./users/connor
+          ./users/kendrick
         ];
       };
 
