@@ -71,7 +71,7 @@
               content = {
                 type = "btrfs";
                 subvolumes = {
-                  "/@" = {
+                  "/@nixos" = {
                     mountpoint = "/";
                   };
                   "/@home" = {
