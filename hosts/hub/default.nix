@@ -16,7 +16,7 @@
       sops-nix.nixosModules.sops
     ]
     ++ (with nixos-hardware.nixosModules; [
-      common-cpu-intel
+      common-cpu-amd
       common-pc
       common-pc-ssd
     ]);
