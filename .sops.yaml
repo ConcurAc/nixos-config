@@ -1,13 +1,22 @@
 keys:
-  - &connor age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
+  - &connor AAE0D89BCA26D900CA2377EF176F4CAECA17839B
+  - &effigy age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
+  - &hub age1e5z8s7phct8cega2lytgqvm99g7um75tsmxvhz32wk3ptg5gjuqqu5cgk6
   - &cadence age1t9k8pfz8slz878tcrv2v4dmxw8w7wxhcgyg9na82a8vf4qlkpuzqpet3vw
 creation_rules:
   - path_regex: users/connor/[^/]+\.(yaml|json|env|ini)$
     key_groups:
+      - gpg:
+          - *connor
+  - path_regex: hosts/hub/[^/]+\.(yaml)$
+    key_groups:
       - age:
+          - *hub
+      - gpg:
           - *connor
   - path_regex: hosts/cadence/[^/]+\.(yaml|env|conf)$
     key_groups:
       - age:
-          - *connor
           - *cadence
+      - gpg:
+          - *connor

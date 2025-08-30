@@ -13,6 +13,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       disko.nixosModules.disko
+      sops-nix.nixosModules.sops
     ]
     ++ (with nixos-hardware.nixosModules; [
       common-cpu-intel
@@ -47,8 +48,8 @@
 
   disko.devices = {
     disk = {
-      internal = {
-        device = "/dev/nvmen0p1";
+      conductor = {
+        device = "/dev/disk/by-path/pci-0000:06:00.0-nvme-1";
         type = "disk";
         content = {
           type = "gpt";
@@ -91,6 +92,19 @@
       };
     };
   };
+
+  sops = {
+    gnupg = {
+      home = "/root/.gnupg";
+      sshKeyPaths = [ ];
+    };
+    secrets.root-passwd = {
+      sopsFile = ./secrets.yaml;
+      neededForUsers = true;
+    };
+  };
+
+  users.users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
 
   networking = {
     hostName = "hub";
@@ -137,5 +151,5 @@
   zramSwap.enable = true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

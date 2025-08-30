@@ -22,10 +22,10 @@
     ]);
 
   sops = {
-    defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/root/.config/sops/age/keys.txt";
+    defaultSopsFile = ./secrets.yaml;
     secrets = {
-      passwd.neededForUsers = true;
+      root-passwd.neededForUsers = true;
       deluge-auth = {
         owner = "deluge";
         group = "deluge";
@@ -162,7 +162,7 @@
 
   users = {
     mutableUsers = false;
-    users.root.hashedPasswordFile = config.sops.secrets.passwd.path;
+    users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

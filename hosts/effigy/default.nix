@@ -16,6 +16,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       disko.nixosModules.disko
+      sops-nix.nixosModules.sops
     ]
     ++ (with nixos-hardware.nixosModules; [
       common-cpu-intel
@@ -78,7 +79,12 @@
     fsType = "ext4";
   };
 
-  zramSwap.enable = true;
+  sops = {
+    gnupg = {
+      home = "/root/.gnupg";
+      sshKeyPaths = [ ];
+    };
+  };
 
   networking = {
     hostName = "effigy";
@@ -145,4 +151,6 @@
     enable = true;
     powertop.enable = true;
   };
+
+  zramSwap.enable = true;
 }
