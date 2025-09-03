@@ -7,6 +7,10 @@
     };
   };
 
+  services.gnome.gnome-keyring.enable = true;
+
+  security.soteria.enable = true;
+
   xdg = {
     portal = {
       enable = true;
@@ -14,14 +18,10 @@
       xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
-        xdg-desktop-portal-gnome
-        gnome-keyring
       ];
     };
     terminal-exec.enable = true;
   };
-
-  security.soteria.enable = true;
 
   environment.systemPackages = with pkgs; [
     grim

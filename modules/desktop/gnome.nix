@@ -24,8 +24,6 @@
     gnome-connections
 
     ghostty
-    mpv
-    zathura
     wl-clipboard
   ];
 
