@@ -1,10 +1,10 @@
 { pkgs, ... }:
 {
   programs = {
-    hyprland = {
+    niri = {
       enable = true;
-      withUWSM = true;
     };
+
   };
 
   xdg = {
@@ -24,6 +24,7 @@
   security.soteria.enable = true;
 
   environment.systemPackages = with pkgs; [
+    xwayland-satellite
     grim
     slurp
     wl-clipboard

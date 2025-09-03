@@ -5,18 +5,28 @@
     wrapperFeatures.gtk = true;
   };
 
-  # Enable login manager
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "tuigreet";
-      };
+  services.gnome.gnome-keyring.enable = true;
+
+  xdg = {
+    portal = {
+      enable = true;
+      wlr.enable = true;
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+        gnome-keyring
+      ];
     };
+    terminal-exec.enable = true;
   };
 
-  # Add greeter
+  security.soteria.enable = true;
+
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    grim
+    slurp
+    wl-clipboard
+    mako
   ];
 }
