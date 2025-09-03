@@ -1,25 +1,14 @@
 {
-  inputs,
   config,
   lib,
-  pkgs,
-  modulesPath,
   ...
 }:
 
 {
-  imports =
-    with inputs;
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
-      disko.nixosModules.disko
-      sops-nix.nixosModules.sops
-    ]
-    ++ (with nixos-hardware.nixosModules; [
-      common-cpu-intel
-      common-pc
-      common-pc-ssd
-    ]);
+  imports = [
+    ./system.nix
+    ./disks.nix
+  ];
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
@@ -37,102 +26,7 @@
     };
   };
 
-  boot = {
-    initrd.availableKernelModules = [
-      "xhci_pci"
-      "ahci"
-      "usbhid"
-      "usb_storage"
-      "sd_mod"
-      "sdhci_pci"
-    ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" ];
-    supportedFilesystems = [ "nfs" ];
-
-    loader = {
-      grub = {
-        device = "nodev";
-        efiSupport = true;
-      };
-      efi.canTouchEfiVariables = true;
-    };
-
-    tmp.useZram = true;
-  };
-
-  disko.devices = {
-    disk = {
-      eMMC = {
-        device = "/dev/mmcblk0";
-        type = "disk";
-        content = {
-          type = "gpt";
-          partitions = {
-            boot = {
-              name = "boot";
-              type = "EF00";
-              start = "1M";
-              end = "512M";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
-              };
-            };
-            root = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                mountpoint = "/";
-                format = "f2fs";
-                extraArgs = [
-                  "-O"
-                  "extra_attr,inode_checksum,sb_checksum,compression"
-                ];
-                mountOptions = [
-                  "compress_algorithm=zstd:6,compress_chksum,atgc,gc_merge,lazytime,nodiscard"
-                ];
-              };
-            };
-          };
-        };
-      };
-    };
-  };
-
-  systemd = {
-    mounts = [
-      {
-        type = "nfs";
-        what = "server:/archives";
-        where = "/mnt/archives";
-      }
-      {
-        type = "nfs";
-        what = "server:/media";
-        where = "/mnt/media";
-      }
-    ];
-
-    automounts = [
-      {
-        wantedBy = [ "multi-user.target" ];
-        automountConfig = {
-          TimeoutIdleSec = "600";
-        };
-        where = "/mnt/archives";
-      }
-      {
-        wantedBy = [ "multi-user.target" ];
-        automountConfig = {
-          TimeoutIdleSec = "600";
-        };
-        where = "/mnt/media";
-      }
-    ];
-  };
+  users.users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
 
   networking = {
     hostName = "cadence";
@@ -158,13 +52,35 @@
     };
   };
 
-  zramSwap.enable = true;
-
-  users = {
-    mutableUsers = false;
-    users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
+  systemd = {
+    mounts = [
+      {
+        type = "nfs";
+        what = "server:/archives";
+        where = "/mnt/archives";
+      }
+      {
+        type = "nfs";
+        what = "server:/media";
+        where = "/mnt/media";
+      }
+    ];
+    automounts = [
+      {
+        wantedBy = [ "multi-user.target" ];
+        automountConfig = {
+          TimeoutIdleSec = "600";
+        };
+        where = "/mnt/archives";
+      }
+      {
+        wantedBy = [ "multi-user.target" ];
+        automountConfig = {
+          TimeoutIdleSec = "600";
+        };
+        where = "/mnt/media";
+      }
+    ];
   };
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

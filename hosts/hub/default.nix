@@ -1,97 +1,16 @@
 {
-  inputs,
   config,
   lib,
   pkgs,
-  modulesPath,
   ...
 }:
 
 {
-  imports =
-    with inputs;
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
-      disko.nixosModules.disko
-      sops-nix.nixosModules.sops
-    ]
-    ++ (with nixos-hardware.nixosModules; [
-      common-cpu-amd
-      common-pc
-      common-pc-ssd
-    ]);
-
-  boot = {
-    initrd.availableKernelModules = [
-      "nvme"
-      "xhci_pci"
-      "ahci"
-      "thunderbolt"
-      "usb_storage"
-      "usbhid"
-      "sd_mod"
-    ];
-    kernelModules = [ "kvm-amd" ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" ];
-
-    loader = {
-      grub = {
-        device = "nodev";
-        efiSupport = true;
-      };
-      efi.canTouchEfiVariables = true;
-    };
-
-    tmp.useZram = true;
-  };
-
-  disko.devices = {
-    disk = {
-      conductor = {
-        device = "/dev/disk/by-path/pci-0000:06:00.0-nvme-1";
-        type = "disk";
-        content = {
-          type = "gpt";
-          partitions = {
-            boot = {
-              name = "boot";
-              type = "EF00";
-              start = "1M";
-              end = "512M";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
-              };
-            };
-            root = {
-              size = "100%";
-              content = {
-                type = "btrfs";
-                subvolumes = {
-                  "/@nixos" = {
-                    mountpoint = "/";
-                  };
-                  "/@home" = {
-                    mountpoint = "/home";
-                  };
-                  "/@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                    ];
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  };
+  imports = [
+    ./system.nix
+    ./disks.nix
+    ../../modules/container-services
+  ];
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
@@ -118,8 +37,46 @@
   };
 
   services = {
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet";
+        };
+      };
+    };
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+    };
+    ollama = {
+      enable = true;
+      openFirewall = true;
+      host = "0.0.0.0";
+      acceleration = "rocm";
+      loadModels = [
+        "qwen3:8b"
+        "gemma3:270m"
+        "gemma3:4b"
+        "deepseek-r1:8b"
+      ];
+    };
     vaultwarden.enable = true;
-    syncthing.enable = true;
+    immich = {
+      enable = true;
+      openFirewall = true;
+      host = "0.0.0.0";
+    };
+    avahi = {
+      enable = true;
+      openFirewall = true;
+    };
+  };
+
+  programs = {
+    virt-manager = {
+      enable = true;
+    };
   };
 
   virtualisation = {
@@ -128,25 +85,31 @@
       dockerCompat = true;
       defaultNetwork.settings.dns_enabled = true;
     };
-    oci-containers.containers = {
-      invoke-ai = {
-        image = "ghcr.io/invoke-ai/invokeai";
-        hostname = "models.invoke.ai";
-        ports = [
-          "127.0.0.1:9090:9090"
-        ];
-        volumes = [
-          "invoke-ai:/invokeai"
-        ];
-        extraOptions = [
-          "--gpus=all"
+    libvirtd = {
+      enable = true;
+      qemu.ovmf = {
+        packages = [
+          pkgs.OVMFFull.fd
         ];
       };
     };
   };
 
-  zramSwap.enable = true;
+  environment.systemPackages = with pkgs.rocmPackages; [
+    rocm-core
+  ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  container-services = {
+    enable = true;
+    withGPU = true;
+    interface = "enp7s0";
+    services = {
+      invoke-ai = {
+        enable = true;
+        openFirewall = true;
+        withGPU = true;
+        host = "0.0.0.0";
+      };
+    };
+  };
 }
