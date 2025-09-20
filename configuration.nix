@@ -9,31 +9,16 @@
     "flakes"
   ];
 
-  # Set your time zone.
   time.timeZone = "Australia/Melbourne";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_AU.UTF-8";
   console = {
     font = "ter-v20b";
     packages = with pkgs; [ terminus_font ];
   };
 
-  fonts = {
-    packages = with pkgs; [
-      nerd-fonts.zed-mono
-      nerd-fonts.jetbrains-mono
-    ];
-    fontconfig.defaultFonts.monospace = [
-      "ZedMono NF Extd"
-      "JetBrainsMono Nerd Font"
-    ];
-  };
-
   security.sudo-rs.enable = true;
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
 
@@ -61,14 +46,7 @@
   ];
 
   programs = {
-    # Some programs need SUID wrappers, can be configured further or are
-    # started in user sessions.
     git.enable = true;
-    mtr.enable = true;
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-    };
   };
 
   services = {

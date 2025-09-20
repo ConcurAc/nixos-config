@@ -4,7 +4,7 @@
     niri = {
       enable = true;
     };
-
+    xwayland.enable = true;
   };
 
   xdg = {

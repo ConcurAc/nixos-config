@@ -113,5 +113,4 @@
     ];
     variables.EDITOR = "nvim";
   };
-
 }

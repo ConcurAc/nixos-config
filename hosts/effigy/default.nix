@@ -98,6 +98,10 @@
     useDHCP = lib.mkDefault true;
   };
 
+  programs = {
+    steam.enable = true;
+  };
+
   services = {
     greetd = {
       enable = true;
@@ -129,7 +133,10 @@
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     bluetooth.enable = true;
-    graphics.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
     nvidia = {
       open = true;
       modesetting.enable = true;
