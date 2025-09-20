@@ -20,6 +20,11 @@
     };
   };
 
+  nixpkgs = {
+    hostPlatform = lib.mkDefault "x86_64-linux";
+    config.allowUnfree = true;
+  };
+
   users.users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
 
   networking = {
@@ -77,6 +82,7 @@
     virt-manager = {
       enable = true;
     };
+    steam.enable = true;
   };
 
   virtualisation = {
