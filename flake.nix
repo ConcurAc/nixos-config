@@ -55,6 +55,7 @@
 
           ./users/connor
           ./users/kendrick
+          ./users/liam
         ];
       };
 
