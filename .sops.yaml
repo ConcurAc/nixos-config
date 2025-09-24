@@ -8,6 +8,10 @@ creation_rules:
       - age:
           - *effigy
           - *hub
+  - path_regex: hosts/effigy/[^/]+\.(yaml|conf)$
+    key_groups:
+      - age:
+          - *effigy
   - path_regex: hosts/hub/[^/]+\.(yaml)$
     key_groups:
       - age:

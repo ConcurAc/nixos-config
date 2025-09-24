@@ -79,7 +79,19 @@
     fsType = "ext4";
   };
 
-  sops.age.keyFile = "/root/.config/sops/age/keys.txt";
+  sops = {
+    age.keyFile = "/root/.config/sops/age/keys.txt";
+    secrets = {
+      home = {
+        format = "binary";
+        sopsFile = ./home.conf;
+      };
+      proxy = {
+        format = "binary";
+        sopsFile = ./proxy.conf;
+      };
+    };
+  };
 
   networking = {
     hostName = "effigy";
@@ -90,12 +102,17 @@
         powersave = true;
       };
     };
-
-    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-    # (the default) this is the recommended approach. When using systemd-networkd it's
-    # still possible to use this option, but it's recommended to use it in conjunction
-    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
     useDHCP = lib.mkDefault true;
+    wg-quick.interfaces = {
+      home = {
+        autostart = false;
+        configFile = config.sops.secrets.home.path;
+      };
+      proxy = {
+        autostart = false;
+        configFile = config.sops.secrets.proxy.path;
+      };
+    };
   };
 
   programs = {
@@ -119,7 +136,6 @@
       enable = true;
       jack.enable = true;
     };
-
     udisks2.enable = true;
     power-profiles-daemon.enable = true;
     upower.enable = true;
@@ -154,7 +170,6 @@
         finegrained = true;
       };
     };
-    nvidia-container-toolkit.enable = true;
   };
 
   powerManagement = {
