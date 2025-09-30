@@ -16,7 +16,7 @@ creation_rules:
     key_groups:
       - age:
           - *hub
-  - path_regex: hosts/cadence/[^/]+\.(yaml|env|conf)$
+  - path_regex: hosts/cadence/[^/]+\.(yaml|conf)$
     key_groups:
       - age:
           - *cadence
