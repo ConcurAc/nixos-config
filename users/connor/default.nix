@@ -1,9 +1,13 @@
 {
   inputs,
   config,
+  lib,
   pkgs,
   ...
 }:
+let
+  cfg = config.users.users.connor;
+in
 {
   imports = with inputs; [
     sops-nix.nixosModules.sops
@@ -31,4 +35,23 @@
       home-manager
     ];
   };
+
+  security.pam.mount.extraVolumes = [
+    ''
+      <volume
+        user="${cfg.name}"
+        mountpoint="${cfg.home}/Games"
+        path="${pkgs.gocryptfs}/bin/gocryptfs#${cfg.home}/.crypt/Games"
+        fstype="fuse"
+      />
+    ''
+    ''
+      <volume
+        user="${cfg.name}"
+        mountpoint="${cfg.home}/Media"
+        path="${pkgs.gocryptfs}/bin/gocryptfs#${cfg.home}/.crypt/Media"
+        fstype="fuse"
+      />
+    ''
+  ];
 }

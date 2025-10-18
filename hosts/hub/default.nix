@@ -103,6 +103,13 @@
     rocm-core
   ];
 
+  security = {
+    pam.mount = {
+      enable = true;
+      createMountPoints = true;
+    };
+  };
+
   container-services = {
     enable = true;
     withGPU = true;
