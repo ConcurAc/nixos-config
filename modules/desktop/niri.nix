@@ -3,6 +3,7 @@
   programs = {
     niri = {
       enable = true;
+      package = pkgs.niri;
     };
     xwayland.enable = true;
   };
@@ -16,16 +17,12 @@
         xdg-desktop-portal-gtk
       ];
     };
-    terminal-exec.enable = true;
   };
 
   security.soteria.enable = true;
 
   environment.systemPackages = with pkgs; [
     xwayland-satellite
-    grim
-    slurp
-    wl-clipboard
-    mako
+    wl-clipboard-rs
   ];
 }

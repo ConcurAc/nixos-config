@@ -2,12 +2,21 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  imports = [ ./modules/terminal.nix ];
+
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   time.timeZone = "Australia/Melbourne";
 
@@ -17,40 +26,115 @@
     packages = with pkgs; [ terminus_font ];
   };
 
-  security.sudo-rs.enable = true;
+  security.sudo-rs = {
+    enable = true;
+    extraConfig = "Defaults pwfeedback";
+  };
 
-  environment.systemPackages = with pkgs; [
-    uutils-coreutils-noprefix
+  environment = {
+    systemPackages = with pkgs; [
+      uutils-coreutils-noprefix
 
-    nil
-    nixd
+      nil
+      nixd
 
-    wget
-    curl
-    openssh
+      wget
+      curl
+      openssh
 
-    p7zip
+      eza
+      zoxide
+      bat
+      fd
+      ripgrep
+      fzf
+      delta
+      sd
+      dust
+      tlrc
 
-    eza
-    zoxide
-    bat
-    fd
-    ripgrep
-    fzf
-    delta
-    sd
-    dust
-    tlrc
+      sops
 
-    sops
-  ];
+      p7zip
+      trash-cli
+    ];
+    variables = {
+      EDITOR = "nvim";
+    };
+  };
 
   programs = {
     git.enable = true;
+    tmux.enable = true;
+    yazi = {
+      enable = true;
+      settings = {
+        yazi = {
+          mgr.ratio = [
+            2
+            4
+            3
+          ];
+          plugin.prepend_previewers = [
+            {
+              name = "*.md";
+              run = "rich-preview";
+            }
+            {
+              name = "*.csv";
+              run = "rich-preview";
+            }
+            {
+              name = "*.json";
+              run = "rich-preview";
+            }
+            {
+              name = "*.rst";
+              run = "rich-preview";
+            }
+            {
+              name = "*.ipynb";
+              run = "rich-preview";
+            }
+          ];
+        };
+        keymap = {
+          mgr.prepend_keymap = [
+            {
+              on = "M";
+              run = "plugin mount";
+              desc = "mount drives";
+            }
+            {
+              on = "u";
+              run = "plugin restore";
+              desc = "restore last trashed files/folders";
+            }
+          ];
+        };
+      };
+      plugins = with pkgs.yaziPlugins; {
+        inherit restore mount rich-preview;
+      };
+    };
   };
 
   services = {
     openssh.enable = true;
+  };
+
+  documentation.man.enable = true;
+
+  xdg = {
+    terminal-exec.enable = true;
+    portal.extraPortals = with pkgs; [
+      xdg-desktop-portal-termfilechooser
+    ];
+  };
+
+  stylix = {
+    enable = true;
+    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

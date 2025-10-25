@@ -26,6 +26,7 @@
     ]);
 
   boot = {
+    plymouth.enable = true;
     initrd = {
       availableKernelModules = [
         "xhci_pci"
@@ -77,6 +78,15 @@
       device = "/dev/disk/by-uuid/3c295ba2-ab0c-41d0-ae62-6718eeb7b66d";
       fsType = "ext4";
     };
+    "/mnt/hub/users" = {
+      device = "hub:/users";
+      fsType = "nfs";
+      options = [
+        "x-systemd.automount"
+        "x-systemd.idle-timeout=600"
+        "noauto"
+      ];
+    };
   };
 
   sops = {
@@ -90,6 +100,20 @@
         format = "binary";
         sopsFile = ./proxy.conf;
       };
+    };
+  };
+
+  security = {
+    pam.mount = {
+      enable = true;
+      createMountPoints = true;
+      fuseMountOptions = [
+        "nodev"
+        "nosuid"
+      ];
+      additionalSearchPaths = with pkgs; [
+        gocryptfs
+      ];
     };
   };
 
@@ -122,9 +146,11 @@
   services = {
     greetd = {
       enable = true;
+      useTextGreeter = true;
+      greeterManagesPlymouth = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet";
+          command = lib.getExe pkgs.tuigreet;
         };
       };
     };

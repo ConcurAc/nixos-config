@@ -1,7 +1,6 @@
 {
   inputs,
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -40,16 +39,8 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="${cfg.home}/Games"
-        path="${pkgs.gocryptfs}/bin/gocryptfs#${cfg.home}/.crypt/Games"
-        fstype="fuse"
-      />
-    ''
-    ''
-      <volume
-        user="${cfg.name}"
         mountpoint="${cfg.home}/Media"
-        path="${pkgs.gocryptfs}/bin/gocryptfs#${cfg.home}/.crypt/Media"
+        path="gocryptfs#${cfg.home}/.crypt/media"
         fstype="fuse"
       />
     ''
