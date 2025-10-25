@@ -20,9 +20,17 @@
     };
     niri = {
       url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    quickshell = {
+      url = "github:outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    noctalia-shell = {
+      url = "github:noctalia-dev/noctalia-shell";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs";
+        quickshell.follows = "quickshell";
       };
     };
   };
@@ -35,6 +43,7 @@
       home-manager,
       stylix,
       niri,
+      noctalia-shell,
       ...
     }:
     {
@@ -48,6 +57,7 @@
           sops-nix.nixosModules.sops
           home-manager.nixosModules.default
           stylix.nixosModules.stylix
+          noctalia-shell.nixosModules.default
 
           ./hosts/effigy
           ./configuration.nix
@@ -66,6 +76,8 @@
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
+
+          noctalia-shell.nixosModules.default
           ./hosts/hub
           ./configuration.nix
           ./modules/terminal.nix

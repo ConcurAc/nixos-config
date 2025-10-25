@@ -106,6 +106,7 @@
         };
       };
     };
+    noctalia-shell.enable = true;
   };
 
   programs = {
