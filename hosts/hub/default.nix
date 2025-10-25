@@ -21,7 +21,7 @@
   };
 
   nixpkgs = {
-    hostPlatform = lib.mkDefault "x86_64-linux";
+    hostPlatform = "x86_64-linux";
     config.allowUnfree = true;
   };
 
@@ -42,22 +42,12 @@
     ];
   };
 
-  fileSystems."/export/connor" = {
-    device = "/dev/disk/by-label/Collection";
-    fsType = "btrfs";
-    options = [
-      "subvol=/@connor"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
   services = {
     greetd = {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet";
+          command = lib.getExe pkgs.tuigreet;
         };
       };
     };
@@ -65,7 +55,7 @@
       enable = true;
       exports = ''
         /export 192.168.1.0/24(rw,crossmnt,fsid=0)
-        /export/connor 192.168.1.0/24(rw,insecure)
+        /export/users 192.168.1.0/24(rw,insecure)
       '';
     };
     avahi = {
@@ -112,12 +102,6 @@
             proxyPass = "http://localhost:8096";
           };
         };
-        "immich" = {
-          locations."/" = {
-            proxyPass = "http://localhost:2283";
-            proxyWebsockets = true;
-          };
-        };
       };
     };
   };
@@ -137,14 +121,7 @@
     };
     libvirtd = {
       enable = true;
-      qemu = {
-        ovmf = {
-          packages = [
-            pkgs.OVMFFull.fd
-          ];
-        };
-        swtpm.enable = true;
-      };
+      qemu.swtpm.enable = true;
     };
   };
 
@@ -156,6 +133,14 @@
     pam.mount = {
       enable = true;
       createMountPoints = true;
+      removeCreatedMountPoints = true;
+      fuseMountOptions = [
+        "nodev"
+        "nosuid"
+      ];
+      additionalSearchPaths = with pkgs; [
+        gocryptfs
+      ];
     };
   };
 
