@@ -65,6 +65,7 @@
         modules = [
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
+          stylix.nixosModules.stylix
           ./hosts/hub
           ./configuration.nix
           ./modules/terminal.nix
