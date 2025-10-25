@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [ ./modules/terminal.nix ];
 
@@ -130,11 +130,6 @@
     portal.extraPortals = with pkgs; [
       xdg-desktop-portal-termfilechooser
     ];
-  };
-
-  stylix = {
-    enable = true;
-    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

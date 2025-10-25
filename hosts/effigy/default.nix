@@ -204,4 +204,9 @@
   };
 
   zramSwap.enable = true;
+
+  stylix = {
+    enable = true;
+    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+  };
 }

@@ -159,6 +159,11 @@
     };
   };
 
+  stylix = {
+    enable = true;
+    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+  };
+
   container-services = {
     enable = true;
     withGPU = true;
