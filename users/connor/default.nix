@@ -8,9 +8,12 @@ let
   cfg = config.users.users.connor;
 in
 {
-  imports = with inputs; [
+  imports = [
+    ../../modules/container-services
+  ]
+  ++ (with inputs; [
     sops-nix.nixosModules.sops
-  ];
+  ]);
 
   sops.secrets.connor-passwd = {
     sopsFile = ./secrets.yaml;
@@ -30,9 +33,30 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a"
     ];
     shell = pkgs.fish;
+    linger = true;
     packages = with pkgs; [
       home-manager
+      brave
     ];
+  };
+
+  container-services.users.connor = {
+    enable = true;
+    container = {
+      enable = true;
+      withMacvlan = true;
+      config = {
+        imports = [ ../../modules/terminal.nix ];
+        console.enable = true;
+        services = {
+          udisks2.enable = true;
+          syncthing = {
+            enable = true;
+            openDefaultPorts = true;
+          };
+        };
+      };
+    };
   };
 
   security.pam.mount.extraVolumes = [
