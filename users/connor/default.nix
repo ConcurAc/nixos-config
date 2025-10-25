@@ -41,7 +41,6 @@ in
   };
 
   container-services.users.connor = {
-    enable = true;
     container = {
       enable = true;
       withMacvlan = true;
@@ -49,7 +48,6 @@ in
         imports = [ ../../modules/terminal.nix ];
         console.enable = true;
         services = {
-          udisks2.enable = true;
           syncthing = {
             enable = true;
             openDefaultPorts = true;
