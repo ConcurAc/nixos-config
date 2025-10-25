@@ -12,6 +12,8 @@
     ../../modules/container-services
   ];
 
+  boot.plymouth.enable = true;
+
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
     secrets.root-passwd = {
@@ -107,9 +109,6 @@
   };
 
   programs = {
-    virt-manager = {
-      enable = true;
-    };
     steam.enable = true;
   };
 
