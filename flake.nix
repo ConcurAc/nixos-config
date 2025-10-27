@@ -18,10 +18,6 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     quickshell = {
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,13 +38,10 @@
       disko,
       home-manager,
       stylix,
-      niri,
       noctalia-shell,
       ...
     }:
     {
-      nixpkgs.overlays = [ niri.overlays.niri ];
-
       nixosConfigurations.effigy = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
@@ -62,7 +55,6 @@
           ./hosts/effigy
           ./configuration.nix
 
-          niri.nixosModules.niri
           ./modules/desktop/niri.nix
 
           ./users/connor
@@ -82,9 +74,6 @@
           ./configuration.nix
           ./modules/terminal.nix
 
-          ./modules/desktop/sway.nix
-
-          niri.nixosModules.niri
           ./modules/desktop/niri.nix
           ./modules/desktop/gnome.nix
 

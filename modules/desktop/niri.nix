@@ -1,11 +1,16 @@
 { pkgs, ... }:
 {
   programs = {
-    niri = {
-      enable = true;
-      package = pkgs.niri;
-    };
+    niri.enable = true;
     xwayland.enable = true;
+    uwsm = {
+      enable = true;
+      waylandCompositors.niri = {
+        prettyName = "niri";
+        comment = "niri compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/niri";
+      };
+    };
   };
 
   xdg = {
@@ -15,6 +20,7 @@
       xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
+        xdg-desktop-portal-wlr
       ];
     };
   };
