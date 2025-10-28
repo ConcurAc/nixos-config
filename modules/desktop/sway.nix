@@ -14,6 +14,7 @@
       xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
+        xdg-desktop-portal-wlr
       ];
     };
     terminal-exec.enable = true;
@@ -22,9 +23,6 @@
   security.soteria.enable = true;
 
   environment.systemPackages = with pkgs; [
-    grim
-    slurp
-    wl-clipboard
-    mako
+    wl-clipboard-rs
   ];
 }

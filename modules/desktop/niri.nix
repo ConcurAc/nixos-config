@@ -3,14 +3,6 @@
   programs = {
     niri.enable = true;
     xwayland.enable = true;
-    uwsm = {
-      enable = true;
-      waylandCompositors.niri = {
-        prettyName = "niri";
-        comment = "niri compositor managed by UWSM";
-        binPath = "/run/current-system/sw/bin/niri";
-      };
-    };
   };
 
   xdg = {
