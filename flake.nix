@@ -18,6 +18,10 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     quickshell = {
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,6 +42,7 @@
       disko,
       home-manager,
       stylix,
+      nixvim,
       noctalia-shell,
       ...
     }:
@@ -50,6 +55,7 @@
           sops-nix.nixosModules.sops
           home-manager.nixosModules.default
           stylix.nixosModules.stylix
+          nixvim.nixosModules.nixvim
           noctalia-shell.nixosModules.default
 
           ./hosts/effigy

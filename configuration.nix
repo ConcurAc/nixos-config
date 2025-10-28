@@ -52,6 +52,7 @@
       sd
       dust
       tlrc
+      broot
 
       sops
 
@@ -66,57 +67,6 @@
   programs = {
     git.enable = true;
     tmux.enable = true;
-    yazi = {
-      enable = true;
-      settings = {
-        yazi = {
-          mgr.ratio = [
-            2
-            4
-            3
-          ];
-          plugin.prepend_previewers = [
-            {
-              name = "*.md";
-              run = "rich-preview";
-            }
-            {
-              name = "*.csv";
-              run = "rich-preview";
-            }
-            {
-              name = "*.json";
-              run = "rich-preview";
-            }
-            {
-              name = "*.rst";
-              run = "rich-preview";
-            }
-            {
-              name = "*.ipynb";
-              run = "rich-preview";
-            }
-          ];
-        };
-        keymap = {
-          mgr.prepend_keymap = [
-            {
-              on = "M";
-              run = "plugin mount";
-              desc = "mount drives";
-            }
-            {
-              on = "u";
-              run = "plugin restore";
-              desc = "restore last trashed files/folders";
-            }
-          ];
-        };
-      };
-      plugins = with pkgs.yaziPlugins; {
-        inherit restore mount rich-preview;
-      };
-    };
   };
 
   services = {
