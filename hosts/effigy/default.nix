@@ -140,6 +140,7 @@
   };
 
   programs = {
+    nix-ld.enable = true;
     steam.enable = true;
   };
 
