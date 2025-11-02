@@ -26,55 +26,6 @@
     packages = with pkgs; [ terminus_font ];
   };
 
-  security.sudo-rs = {
-    enable = true;
-    extraConfig = "Defaults pwfeedback";
-  };
-
-  environment = {
-    systemPackages = with pkgs; [
-      uutils-coreutils-noprefix
-
-      nil
-      nixd
-
-      wget
-      curl
-      openssh
-
-      eza
-      zoxide
-      bat
-      fd
-      ripgrep
-      fzf
-      delta
-      sd
-      dust
-      tlrc
-      broot
-
-      sops
-
-      p7zip
-      trash-cli
-    ];
-    variables = {
-      EDITOR = "nvim";
-    };
-  };
-
-  programs = {
-    git.enable = true;
-    tmux.enable = true;
-  };
-
-  services = {
-    openssh.enable = true;
-  };
-
-  documentation.man.enable = true;
-
   xdg = {
     terminal-exec.enable = true;
     portal.extraPortals = with pkgs; [

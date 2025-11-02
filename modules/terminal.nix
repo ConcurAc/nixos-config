@@ -51,7 +51,54 @@ let
   };
 in
 {
+
+  security.sudo-rs = {
+    enable = true;
+    extraConfig = "Defaults pwfeedback";
+  };
+
+  environment = {
+    systemPackages = with pkgs; [
+      uutils-coreutils-noprefix
+
+      nil
+      nixd
+
+      wget
+      curl
+      openssh
+
+      eza
+      zoxide
+      bat
+      fd
+      ripgrep
+      fzf
+      delta
+      sd
+      dust
+      tlrc
+      broot
+
+      sops
+
+      p7zip
+      trash-cli
+    ];
+    variables = {
+      EDITOR = "nvim";
+    };
+  };
+
+  documentation.man.enable = true;
+
+  services = {
+    openssh.enable = true;
+  };
+
   programs = {
+    git.enable = true;
+    tmux.enable = true;
     bash = {
       promptInit = ''
         y="$(tput setaf 11)"
