@@ -1,18 +1,17 @@
 { config, lib, ... }:
 let
-  cfg = config.container-services;
-  invokeAICfg = config.container-services.services.invoke-ai;
+  cfg = config.services.invoke-ai;
 in
 {
-  options.container-services.services.invoke-ai = with lib; {
+  options.services.invoke-ai = with lib; {
     enable = mkEnableOption "Enable the invoke-ai service.";
     withGPU = mkOption {
       type = types.bool;
-      default = cfg.withGPU;
+      default = true;
     };
     host = mkOption {
       type = types.str;
-      default = "127.0.0.1";
+      default = "localhost";
     };
     port = mkOption {
       type = types.int;
@@ -23,21 +22,21 @@ in
     };
   };
 
-  config = lib.mkIf config.container-services.enable {
+  config = lib.mkIf cfg.enable {
     virtualisation.oci-containers.containers.invoke-ai = {
       image = "ghcr.io/invoke-ai/invokeai";
       hostname = "models.invoke.ai";
       ports = [
-        "${invokeAICfg.host}:9090:${toString invokeAICfg.port}"
+        "${cfg.host}:${toString cfg.port}:9090"
       ];
       volumes = [
         "invoke-ai:/invokeai"
       ];
-      extraOptions = lib.mkIf invokeAICfg.withGPU [
+      extraOptions = lib.mkIf cfg.withGPU [
         "--device=/dev/dri"
       ];
     };
 
-    networking.firewall.allowedTCPPorts = lib.mkIf invokeAICfg.openFirewall [ invokeAICfg.port ];
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
   };
 }
