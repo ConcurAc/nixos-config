@@ -46,13 +46,13 @@ in
       virtualHosts = {
         "ollama.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:" + toString config.services.ollama.port;
+            proxyPass = "http://localhost:${toString config.services.ollama.port}";
           };
         };
 
         "immich.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:" + toString config.services.immich.port;
+            proxyPass = "http://localhost:${toString config.services.immich.port}";
             proxyWebsockets = true;
           };
         };
@@ -71,13 +71,13 @@ in
 
         "vaultwarden.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:" + toString config.services.vaultwarden.config.ROCKET_PORT;
+            proxyPass = "http://localhost:${toString config.services.vaultwarden.config.ROCKET_PORT}";
           };
         };
 
         "invoke-ai.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:" + toString config.services.invoke-ai.port;
+            proxyPass = "http://localhost:${toString config.services.invoke-ai.port}";
           };
         };
       };

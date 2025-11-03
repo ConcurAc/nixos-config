@@ -15,7 +15,7 @@ in
       };
       photoprism-passwd = {
         sopsFile = ./secrets.yaml;
-        mode = "0444";
+        owner = "photoprism";
       };
       "livebook.env" = {
         sopsFile = ./livebook.env;
@@ -25,6 +25,17 @@ in
         group = cfg.group;
       };
     };
+  };
+
+  users = {
+    users.photoprism = {
+      isSystemUser = true;
+      group = "photoprism";
+      extraGroups = [ "syncthing" ];
+    };
+    groups.photoprism.members = [
+      "photoprism"
+    ];
   };
 
   networking = {
@@ -40,14 +51,13 @@ in
     syncthing = {
       enable = true;
       openDefaultPorts = true;
-      user = "connor";
       guiPasswordFile = secrets.syncthing-passwd.path;
     };
     photoprism = {
       enable = true;
-      originalsPath = "${cfg.home}/gallery";
+      originalsPath = "/var/lib/syncthing/gallery";
       settings = {
-        PHOTOPRISM_ADMIN_USER = "connor";
+        PHOTOPRISM_ADMIN_USER = cfg.name;
         PHOTOPRISM_ADMIN_PASSWORD_FILE = secrets.photoprism-passwd.path;
         PHOTOPRISM_DATABASE_PASSWORD = secrets.photoprism-passwd.path;
       };

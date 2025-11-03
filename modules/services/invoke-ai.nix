@@ -11,7 +11,7 @@ in
     };
     host = mkOption {
       type = types.str;
-      default = "localhost";
+      default = "127.0.0.1";
     };
     port = mkOption {
       type = types.int;

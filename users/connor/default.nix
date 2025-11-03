@@ -52,14 +52,6 @@ in
     withMacvlan = true;
     bindMounts = {
       ${userKeyFile}.hostPath = config.sops.age.keyFile;
-      "${cfg.home}/notes" = {
-        hostPath = "${cfg.home}/Documents/notes";
-        isReadOnly = false;
-      };
-      "${cfg.home}/gallery" = {
-        hostPath = "${cfg.home}/Pictures/gallery";
-        isReadOnly = false;
-      };
     };
     config = {
       imports =
