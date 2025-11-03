@@ -4,30 +4,34 @@
   pkgs,
   ...
 }:
-
+let
+  secrets = config.sops.secrets;
+in
 {
   imports = [
     ./system.nix
     ./disks.nix
-    ../../modules/container-services
+    ./services.nix
+    ../../modules/user-containers.nix
   ];
 
   boot.plymouth.enable = true;
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
-    secrets.root-passwd = {
-      sopsFile = ./secrets.yaml;
-      neededForUsers = true;
+    secrets = {
+      root-passwd = {
+        sopsFile = ./secrets.yaml;
+        neededForUsers = true;
+      };
     };
   };
-
   nixpkgs = {
     hostPlatform = "x86_64-linux";
     config.allowUnfree = true;
   };
 
-  users.users.root.hashedPasswordFile = config.sops.secrets.root-passwd.path;
+  users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
   networking = {
     hostName = "hub";
@@ -37,11 +41,6 @@
     };
     useDHCP = lib.mkDefault true;
     interfaces.enp7s0.wakeOnLan.enable = true;
-    firewall.allowedTCPPorts = [
-      80 # http
-      443 # https
-      2049 # nfs
-    ];
   };
 
   services = {
@@ -53,63 +52,17 @@
         };
       };
     };
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /export 192.168.1.0/24(rw,crossmnt,fsid=0)
-        /export/users 192.168.1.0/24(rw,insecure)
-      '';
-    };
-    avahi = {
-      enable = true;
-      openFirewall = true;
-    };
+    gvfs.enable = true;
     udisks2.enable = true;
     pipewire = {
       enable = true;
       pulse.enable = true;
     };
-    ollama = {
-      enable = true;
-      openFirewall = true;
-      host = "0.0.0.0";
-      acceleration = "rocm";
-      loadModels = [
-        "qwen3:8b"
-        "gemma3:270m"
-        "gemma3:4b"
-        "deepseek-r1:8b"
-      ];
-    };
-    vaultwarden.enable = true;
-    immich = {
-      enable = true;
-      openFirewall = true;
-      host = "0.0.0.0";
-    };
-    jellyfin = {
-      enable = true;
-      openFirewall = true;
-    };
-    nginx = {
-      enable = true;
-      virtualHosts = {
-        "invoke-ai" = {
-          locations."/" = {
-            proxyPass = "http://localhost:9090";
-          };
-        };
-        "jellyfin" = {
-          locations."/" = {
-            proxyPass = "http://localhost:8096";
-          };
-        };
-      };
-    };
     noctalia-shell.enable = true;
   };
 
   programs = {
+    nix-ld.enable = true;
     steam.enable = true;
   };
 
@@ -117,6 +70,7 @@
     podman = {
       enable = true;
       dockerCompat = true;
+      dockerSocket.enable = true;
       defaultNetwork.settings.dns_enabled = true;
     };
     libvirtd = {
@@ -149,17 +103,9 @@
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
   };
 
-  container-services = {
+  user-containers = {
     enable = true;
     withGPU = true;
     interface = "enp7s0";
-    services = {
-      invoke-ai = {
-        enable = true;
-        openFirewall = true;
-        withGPU = true;
-        host = "0.0.0.0";
-      };
-    };
   };
 }
