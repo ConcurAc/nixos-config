@@ -3,7 +3,7 @@ keys:
   - &hub age1e5z8s7phct8cega2lytgqvm99g7um75tsmxvhz32wk3ptg5gjuqqu5cgk6
   - &cadence age1t9k8pfz8slz878tcrv2v4dmxw8w7wxhcgyg9na82a8vf4qlkpuzqpet3vw
 creation_rules:
-  - path_regex: users/connor/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: users/connor/[^/]+\.(yaml|env)$
     key_groups:
       - age:
           - *effigy
