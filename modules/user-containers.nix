@@ -22,40 +22,39 @@ in
       type = types.attrsOf (
         types.submodule {
           options = {
-            container = {
-              enable = mkEnableOption "Enable this user's container.";
-              withGPU = mkOption {
-                type = types.bool;
-                description = "Pass gpu through to container";
-                default = config.container-services.withGPU;
-              };
-              withMacvlan = mkOption {
-                type = types.bool;
-                description = "Create macvlans from network interfaces in container";
-              };
-              bindMounts = mkOption {
-                type = types.attrsOf (
-                  types.submodule {
-                    options = {
-                      hostPath = mkOption {
-                        type = types.str;
-                      };
-                      isReadOnly = mkOption {
-                        type = types.bool;
-                        default = true;
-                      };
+            enable = mkEnableOption "Enable this user's container.";
+            withGPU = mkOption {
+              type = types.bool;
+              description = "Pass gpu through to container";
+              default = config.user-containers.withGPU;
+              defaultText = lib.literalString "config.user-containers.withGPU";
+            };
+            withMacvlan = mkOption {
+              type = types.bool;
+              description = "Create macvlans from network interfaces in container";
+            };
+            bindMounts = mkOption {
+              type = types.attrsOf (
+                types.submodule {
+                  options = {
+                    hostPath = mkOption {
+                      type = types.str;
                     };
-                  }
-                );
-                default = { };
-                description = "Extra bind mounts for container";
+                    isReadOnly = mkOption {
+                      type = types.bool;
+                      default = true;
+                    };
+                  };
+                }
+              );
+              default = { };
+              description = "Extra bind mounts for container";
+            };
+            config = mkOption {
+              type = types.submodule {
+                freeformType = types.attrsOf types.anything;
               };
-              config = mkOption {
-                type = types.submodule {
-                  freeformType = types.attrsOf types.anything;
-                };
-                default = { };
-              };
+              default = { };
             };
           };
         }
@@ -67,9 +66,9 @@ in
   config = lib.mkIf cfg.enable {
     containers = lib.mapAttrs (
       name:
-      { container, ... }:
+      container:
       let
-        userCfg = config.users.users.${name};
+        cfgUser = config.users.users.${name};
       in
       (lib.mkIf container.enable {
         autoStart = true;
@@ -83,9 +82,9 @@ in
         ];
 
         bindMounts = {
-          ${userCfg.hashedPasswordFile}.hostPath = lib.mkIf (
-            userCfg.hashedPasswordFile != null
-          ) userCfg.hashedPasswordFile;
+          ${cfgUser.hashedPasswordFile}.hostPath = lib.mkIf (
+            !isNull cfgUser.hashedPasswordFile
+          ) cfgUser.hashedPasswordFile;
           "/dev/dri" = lib.mkIf container.withGPU {
             hostPath = "/dev/dri";
             isReadOnly = false;
@@ -97,7 +96,7 @@ in
           imports = [ container.config ];
 
           users = {
-            users.${name} = userCfg;
+            users.${name} = cfgUser;
             mutableUsers = false;
           };
 

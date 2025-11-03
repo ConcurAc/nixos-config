@@ -7,16 +7,15 @@
 }:
 let
   cfg = config.users.users.connor;
-  cfgContainer = config.container-services.users.connor;
+  cfgContainer = config.user-containers.users.connor;
   userKeyFile = "${cfg.home}/.config/sops/age/keys.txt";
 in
 {
-  imports = [
-    ../../modules/user-containers.nix
-  ]
-  ++ (with inputs; [
+  imports = with inputs; [
     sops-nix.nixosModules.sops
-  ]);
+  ] ++ [
+    ../../modules/user-containers.nix
+  ];
 
   sops.secrets = {
     connor-passwd = {
@@ -46,28 +45,33 @@ in
   };
 
   user-containers.users.connor = {
-    container = {
-      enable = true;
-      withMacvlan = true;
-      bindMounts = {
-        ${userKeyFile}.hostPath = config.sops.age.keyFile;
-        "/mnt/gallery" = {
-          hostPath = "$/mnt/users/${cfg.name}/gallery";
-          isReadOnly = false;
-        };
+    enable = true;
+    withMacvlan = true;
+    bindMounts = {
+      ${userKeyFile}.hostPath = config.sops.age.keyFile;
+      "${cfg.home}/notes" = {
+        hostPath = "${cfg.home}/Documents/notes";
+        isReadOnly = false;
       };
-      config = {
-        imports = [
-          inputs.sops-nix.nixosModules.sops
-          ../../modules/terminal.nix
-          ./container.nix
-        ];
-        sops.age.keyFile = userKeyFile;
+      "${cfg.home}/gallery" = {
+        hostPath = "${cfg.home}/Pictures/gallery";
+        isReadOnly = false;
       };
+    };
+    config = {
+      imports = with inputs; [
+        sops-nix.nixosModules.sops
+        nixvim.nixosModules.nixvim
+      ] ++ [
+        ../../modules/terminal.nix
+        ./container.nix
+      ];
+      sops.age.keyFile = userKeyFile;
     };
   };
 
   security.pam.mount.extraVolumes = [
+    ''<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin</path>''
     ''
       <volume
         user="${cfg.name}"
@@ -76,31 +80,29 @@ in
         fstype="fuse"
       />
     ''
-  ]
-  ++ lib.mkIf (config.container-services.enable && cfgContainer.enable) [
-    ''
+    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
       <volume
         user="${cfg.name}"
         mountpoint="/mnt/users/${cfg.name}/media"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@media"
         fstype="fuse"
       />
-    ''
-    ''
+    '')
+    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
       <volume
         user="${cfg.name}"
         mountpoint="/mnt/users/${cfg.name}/music"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@music"
         fstype="fuse"
       />
-    ''
-    ''
+    '')
+    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
       <volume
         user="${cfg.name}"
         mountpoint="/mnt/users/${cfg.name}/gallery"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@gallery"
         fstype="fuse"
       />
-    ''
+    '')
   ];
 }

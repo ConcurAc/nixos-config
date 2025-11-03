@@ -5,58 +5,14 @@ let
     vim = "nvim";
   };
   yaziSettings = {
-    yazi = {
-      mgr.ratio = [
-        2
-        4
-        3
-      ];
-      plugin.prepend_previewers = [
-        {
-          name = "*.md";
-          run = "rich-preview";
-        }
-        {
-          name = "*.csv";
-          run = "rich-preview";
-        }
-        {
-          name = "*.json";
-          run = "rich-preview";
-        }
-        {
-          name = "*.rst";
-          run = "rich-preview";
-        }
-        {
-          name = "*.ipynb";
-          run = "rich-preview";
-        }
-      ];
-    };
-    keymap = {
-      mgr.prepend_keymap = [
-        {
-          on = "M";
-          run = "plugin mount";
-          desc = "mount drives";
-        }
-        {
-          on = "u";
-          run = "plugin restore";
-          desc = "restore last trashed files/folders";
-        }
-      ];
-    };
+    yazi.mgr.ratio = [
+      2
+      4
+      3
+    ];
   };
 in
 {
-
-  security.sudo-rs = {
-    enable = true;
-    extraConfig = "Defaults pwfeedback";
-  };
-
   environment = {
     systemPackages = with pkgs; [
       uutils-coreutils-noprefix
@@ -91,6 +47,11 @@ in
   };
 
   documentation.man.enable = true;
+
+  security.sudo-rs = {
+    enable = true;
+    extraConfig = "Defaults pwfeedback";
+  };
 
   services = {
     openssh.enable = true;
@@ -180,7 +141,44 @@ in
     };
     yazi = {
       enable = true;
-      settings = yaziSettings;
+      settings = {
+        yazi.plugin.prepend_previewers = [
+          {
+            name = "*.md";
+            run = "rich-preview";
+          }
+          {
+            name = "*.csv";
+            run = "rich-preview";
+          }
+          {
+            name = "*.json";
+            run = "rich-preview";
+          }
+          {
+            name = "*.rst";
+            run = "rich-preview";
+          }
+          {
+            name = "*.ipynb";
+            run = "rich-preview";
+          }
+        ];
+        keymap = {
+          mgr.prepend_keymap = [
+            {
+              on = "M";
+              run = "plugin mount";
+              desc = "mount drives";
+            }
+            {
+              on = "u";
+              run = "plugin restore";
+              desc = "restore last trashed files/folders";
+            }
+          ];
+        };
+      } // yaziSettings;
       plugins = with pkgs.yaziPlugins; {
         inherit restore mount rich-preview;
       };

@@ -7,14 +7,6 @@ in
     ../../modules/services/invoke-ai.nix
   ];
 
-  sops.secrets = {
-    stalwart = {
-      sopsFile = ./stalwart.env;
-      format = "dotenv";
-      key = "";
-    };
-  };
-
   networking.firewall.allowedTCPPorts = [
     80 # http
     443 # https
@@ -31,7 +23,6 @@ in
     };
     ollama = {
       enable = true;
-      host = "0.0.0.0";
       acceleration = "rocm";
       loadModels = [
         "qwen3:8b"

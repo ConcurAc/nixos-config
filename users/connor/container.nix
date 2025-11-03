@@ -40,11 +40,12 @@ in
     syncthing = {
       enable = true;
       openDefaultPorts = true;
+      user = "connor";
       guiPasswordFile = secrets.syncthing-passwd.path;
     };
     photoprism = {
       enable = true;
-      originalsPath = "/mnt/gallery";
+      originalsPath = "${cfg.home}/gallery";
       settings = {
         PHOTOPRISM_ADMIN_USER = "connor";
         PHOTOPRISM_ADMIN_PASSWORD_FILE = secrets.photoprism-passwd.path;

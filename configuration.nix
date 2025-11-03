@@ -4,8 +4,6 @@
 
 { pkgs, ... }:
 {
-  imports = [ ./modules/terminal.nix ];
-
   nix = {
     gc = {
       automatic = true;
@@ -26,12 +24,7 @@
     packages = with pkgs; [ terminus_font ];
   };
 
-  xdg = {
-    terminal-exec.enable = true;
-    portal.extraPortals = with pkgs; [
-      xdg-desktop-portal-termfilechooser
-    ];
-  };
+  security.sudo-rs.enable = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

@@ -48,7 +48,6 @@
     }:
     {
       nixosConfigurations.effigy = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           disko.nixosModules.disko
@@ -60,6 +59,7 @@
 
           ./hosts/effigy
           ./configuration.nix
+          ./modules/terminal.nix
 
           ./modules/desktop/niri.nix
 
@@ -68,12 +68,12 @@
       };
 
       nixosConfigurations.hub = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
+          nixvim.nixosModules.nixvim
 
           noctalia-shell.nixosModules.default
           ./hosts/hub
@@ -81,7 +81,6 @@
           ./modules/terminal.nix
 
           ./modules/desktop/niri.nix
-          ./modules/desktop/gnome.nix
 
           ./users/connor
           ./users/kendrick
@@ -90,13 +89,13 @@
       };
 
       nixosConfigurations.cadence = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           ./hosts/cadence
           ./configuration.nix
+          ./modules/terminal.nix
         ];
       };
     };
