@@ -65,6 +65,8 @@ in
     };
   };
 
+  programs.fuse.userAllowOther = true;
+
   security.pam.mount.extraVolumes = [
     # CAN SOMEONE ACCEPT MY PR SO I CAN GET RID OF THIS
     # https://github.com/NixOS/nixpkgs/pull/453507

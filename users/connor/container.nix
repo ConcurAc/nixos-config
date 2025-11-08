@@ -10,12 +10,11 @@ in
     secrets = {
       syncthing-passwd = {
         sopsFile = ./secrets.yaml;
-        owner = cfg.name;
-        group = cfg.name;
+        owner = "syncthing";
+        group = "syncthing";
       };
       photoprism-passwd = {
         sopsFile = ./secrets.yaml;
-        owner = "photoprism";
       };
       "livebook.env" = {
         sopsFile = ./livebook.env;
@@ -25,17 +24,6 @@ in
         group = cfg.group;
       };
     };
-  };
-
-  users = {
-    users.photoprism = {
-      isSystemUser = true;
-      group = "photoprism";
-      extraGroups = [ "syncthing" ];
-    };
-    groups.photoprism.members = [
-      "photoprism"
-    ];
   };
 
   networking = {
@@ -55,7 +43,7 @@ in
     };
     photoprism = {
       enable = true;
-      originalsPath = "/var/lib/syncthing/gallery";
+      originalsPath = "/mnt/gallery";
       settings = {
         PHOTOPRISM_ADMIN_USER = cfg.name;
         PHOTOPRISM_ADMIN_PASSWORD_FILE = secrets.photoprism-passwd.path;
@@ -68,7 +56,7 @@ in
     livebook = {
       enableUserService = true;
       environment = {
-        LIVEBOOK_PORT = 8080;
+        LIVEBOOK_PORT = 8058;
       };
       environmentFile = secrets."livebook.env".path;
     };

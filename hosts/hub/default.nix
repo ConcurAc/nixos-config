@@ -33,6 +33,39 @@ in
 
   users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
+  fileSystems = {
+    "/mnt/users" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@users"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/media" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@media"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/gallery" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@gallery"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+  };
+
   networking = {
     hostName = "hub";
     networkmanager = {
@@ -100,7 +133,7 @@ in
 
   stylix = {
     enable = true;
-    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/hopscotch.yaml";
   };
 
   user-containers = {
