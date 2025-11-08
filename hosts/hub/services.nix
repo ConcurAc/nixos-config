@@ -7,6 +7,13 @@ in
     ../../modules/services/invoke-ai.nix
   ];
 
+  fileSystems = {
+    "/exports/users" = {
+      device = "/mnt/users";
+      options = [ "bind" ];
+    };
+  };
+
   networking.firewall.allowedTCPPorts = [
     80 # http
     443 # https
@@ -120,6 +127,12 @@ in
             proxyPass = "http://localhost:${toString config.services.invoke-ai.port}";
           };
         };
+
+        "retrom.local" = {
+          locations."/" = {
+            proxyPass = "http://localhost:${toString config.services.retrom.settings.connections.port}";
+          };
+        };
       };
     };
 
@@ -128,6 +141,17 @@ in
       enable = true;
       openFirewall = true;
       withGPU = true;
+    };
+    retrom = {
+      enable = true;
+      settings = {
+        contentDirectories = [
+          {
+            path = "/mnt/games";
+            storageType = "MultiFileGame";
+          }
+        ];
+      };
     };
   };
 }
