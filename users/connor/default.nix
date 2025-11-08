@@ -41,6 +41,7 @@ in
     packages = with pkgs; [
       home-manager
       brave
+      retrom
     ];
   };
 
@@ -85,6 +86,7 @@ in
         mountpoint="/mnt/users/${cfg.name}/media"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@media"
         fstype="fuse"
+        options="allow_other"
       />
     ''
     ''
@@ -93,6 +95,7 @@ in
         mountpoint="/mnt/users/${cfg.name}/archives"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@archives"
         fstype="fuse"
+        options="allow_other"
       />
     ''
   ];

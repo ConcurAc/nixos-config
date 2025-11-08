@@ -82,7 +82,7 @@
       device = "hub:/users";
       fsType = "nfs";
       options = [
-        "x-systemd.mount-timeout=3s"
+        "x-systemd.mount-timeout=5s"
         "soft"
         "noauto"
       ];
