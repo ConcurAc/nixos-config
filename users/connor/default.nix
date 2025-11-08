@@ -1,13 +1,11 @@
 {
   inputs,
   config,
-  lib,
   pkgs,
   ...
 }:
 let
   cfg = config.users.users.connor;
-  cfgContainer = config.user-containers.users.connor;
   userKeyFile = "${cfg.home}/.config/sops/age/keys.txt";
 in
 {
@@ -40,7 +38,6 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a"
     ];
     shell = pkgs.fish;
-    linger = true;
     packages = with pkgs; [
       home-manager
       brave
@@ -69,6 +66,8 @@ in
   };
 
   security.pam.mount.extraVolumes = [
+    # CAN SOMEONE ACCEPT MY PR SO I CAN GET RID OF THIS
+    # https://github.com/NixOS/nixpkgs/pull/453507
     ''<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin</path>''
     ''
       <volume
@@ -78,27 +77,19 @@ in
         fstype="fuse"
       />
     ''
-    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
+    ''
       <volume
         user="${cfg.name}"
         mountpoint="/mnt/users/${cfg.name}/media"
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@media"
         fstype="fuse"
       />
-    '')
-    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
+    ''
+    ''
       <volume
         user="${cfg.name}"
-        mountpoint="/mnt/users/${cfg.name}/music"
-        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@music"
-        fstype="fuse"
-      />
-    '')
-    (lib.mkIf (config.user-containers.enable && cfgContainer.enable) ''
-      <volume
-        user="${cfg.name}"
-        mountpoint="/mnt/users/${cfg.name}/gallery"
-        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@gallery"
+        mountpoint="/mnt/users/${cfg.name}/archives"
+        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@archives"
         fstype="fuse"
       />
     '')

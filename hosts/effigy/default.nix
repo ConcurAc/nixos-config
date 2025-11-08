@@ -78,12 +78,12 @@
       device = "/dev/disk/by-uuid/3c295ba2-ab0c-41d0-ae62-6718eeb7b66d";
       fsType = "ext4";
     };
-    "/mnt/hub/users" = {
+    "/mnt/users" = {
       device = "hub:/users";
       fsType = "nfs";
       options = [
-        "x-systemd.automount"
-        "x-systemd.idle-timeout=600"
+        "x-systemd.mount-timeout=3s"
+        "soft"
         "noauto"
       ];
     };
