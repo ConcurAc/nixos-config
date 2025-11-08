@@ -5,6 +5,7 @@ in
 {
   imports = [
     ../../modules/services/invoke-ai.nix
+    ../../modules/services/retrom.nix
   ];
 
   fileSystems = {
@@ -130,7 +131,7 @@ in
 
         "retrom.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:${toString config.services.retrom.settings.connections.port}";
+            proxyPass = "http://localhost:${toString config.services.retrom.settings.connection.port}";
           };
         };
       };
