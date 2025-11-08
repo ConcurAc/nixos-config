@@ -94,6 +94,6 @@ in
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@archives"
         fstype="fuse"
       />
-    '')
+    ''
   ];
 }
