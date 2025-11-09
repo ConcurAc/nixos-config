@@ -46,13 +46,15 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   buildPhase = ''
-    export VITE_BASE_URL=/web
-    export VITE_UPTRACE_DSN=https://KgFBXOxX2RFeJurwr7R-4w@api.uptrace.dev?grpc=4317
+    export CI=true
     export NX_NO_CLOUD=true
     export NX_DAEMON=false
 
+    export VITE_BASE_URL=/web
+    export VITE_UPTRACE_DSN=https://KgFBXOxX2RFeJurwr7R-4w@api.uptrace.dev?grpc=4317
+
      # See https://github.com/nrwl/nx/issues/22445
-    cmd='pnpm nx build retrom-client-web --configuration prod'
+    cmd='pnpm nx build retrom-client-web'
     script -c "$cmd" /dev/null
 
     runHook cargoBuildHook
