@@ -1,5 +1,4 @@
 {
-  stdenv,
   lib,
   fetchFromGitHub,
   pkg-config,
@@ -16,16 +15,7 @@
   glib-networking,
   nix-update-script,
 }:
-let
-  # From cargo-tauri hook.nix
-  kernelName = stdenv.hostPlatform.parsed.kernel.name;
-  bundle =
-    {
-      darwin = "app";
-      linux = "deb";
-    }
-    .${kernelName} or (throw "${kernelName} is not supported by cargo-tauri.hook");
-in
+
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "retrom";
   version = "0.7.42";
@@ -69,8 +59,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     export NX_DAEMON=false
 
     # See https://github.com/nrwl/nx/issues/22445
-    cmd='pnpm nx build retrom-client --configuration prod --no-sign --bundles ${bundle}'
+    cmd='pnpm nx build:desktop retrom-client-web'
     script -c "$cmd" /dev/null
+
+    runHook tauriBuildHook
   '';
 
   passthru.updateScript = nix-update-script { };
