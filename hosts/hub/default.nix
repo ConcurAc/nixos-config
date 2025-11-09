@@ -44,6 +44,16 @@ in
         "noatime"
       ];
     };
+    "/mnt/games" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@games"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
     "/mnt/media" = {
       device = "/dev/disk/by-label/Collection";
       options = [
