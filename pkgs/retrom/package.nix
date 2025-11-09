@@ -7,12 +7,13 @@
   nodejs,
   pnpm_9,
   util-linux,
-  openssl,
   perl,
   protobuf_29,
   webkitgtk_4_1,
-  wrapGAppsHook3,
+  openssl,
   glib-networking,
+  gst_all_1,
+  wrapGAppsHook3,
   nix-update-script,
 }:
 
@@ -37,12 +38,12 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
 
   nativeBuildInputs = [
-    pkg-config
     nodejs
     pnpm_9.configHook
+    util-linux
+    pkg-config
     perl
     protobuf_29
-    util-linux
     cargo-tauri.hook
     wrapGAppsHook3
   ];
@@ -51,6 +52,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
     openssl
     webkitgtk_4_1
     glib-networking
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
   ];
 
   buildPhase = ''
