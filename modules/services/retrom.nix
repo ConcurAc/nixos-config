@@ -6,6 +6,11 @@
 }:
 let
   cfg = config.services.retrom;
+  settings = cfg.settings // {
+    connection = {
+      inherit (cfg) dbUrl port;
+    };
+  };
   home = "/var/lib/retrom-service";
   pgPort = config.services.postgresql.settings.port;
 in
@@ -20,87 +25,18 @@ in
       type = lib.types.str;
       default = "retrom";
     };
-    enableDatabase = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Configure the local postgresql database for retrom";
+    enableDatabase = lib.mkEnableOption "Configure the local postgresql database for retrom";
+    dbUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "postgres://${cfg.user}@localhost:${toString pgPort}/${cfg.user}";
+    };
+    port = lib.mkOption {
+      type = lib.types.int;
+      default = 5101;
     };
     openFirewall = lib.mkEnableOption "Open firewall for TCP port";
     settings = lib.mkOption {
-      type = lib.types.submodule {
-        options = {
-          connection = lib.mkOption {
-            type = lib.types.submodule {
-              options = {
-                dbUrl = lib.mkOption {
-                  type = lib.types.str;
-                  default = "postgres://${cfg.user}@localhost:${toString pgPort}/${cfg.user}";
-                };
-                port = lib.mkOption {
-                  type = lib.types.int;
-                  default = 5101;
-                };
-              };
-            };
-            default = { };
-          };
-          contentDirectories = lib.mkOption {
-            type = lib.types.listOf (
-              lib.types.submodule {
-                options = {
-                  path = lib.mkOption { type = lib.types.str; };
-                  storageType = lib.mkOption {
-                    type = lib.types.enum [
-                      "MultiFileGame"
-                      "SingleFileGame"
-                    ];
-                  };
-                };
-              }
-            );
-            example = [
-              {
-                path = "/app/library1/";
-                storageType = "MultiFileGame";
-              }
-              {
-                path = "/app/library2/";
-                storageType = "SingleFileGame";
-              }
-            ];
-          };
-          igdb = lib.mkOption {
-            type = lib.types.nullOr (
-              lib.types.submodule {
-                options = {
-                  clientId = lib.mkOption { type = lib.types.str; };
-                  clientSecret = lib.mkOption { type = lib.types.str; };
-                };
-              }
-            );
-            default = null;
-            example = {
-              clientId = "1234";
-              clientSecret = "my_super_secret_secret_in_plain_text";
-            };
-          };
-          steam = lib.mkOption {
-            type = lib.types.nullOr (
-              lib.types.submodule {
-                options = {
-                  apiKey = lib.mkOption { type = lib.types.str; };
-                  userId = lib.mkOption { type = lib.types.str; };
-                };
-              }
-            );
-            default = null;
-            example = {
-              apiKey = "4321";
-              userId = "1337";
-            };
-          };
-        };
-      };
+      type = lib.types.anything;
       default = { };
     };
     configFile = lib.mkOption {
@@ -157,7 +93,7 @@ in
           "RETROM_WEB_DIR=${cfg.package}/srv/www"
           "RETROM_CONFIG=${
             if isNull cfg.configFile then
-              pkgs.writeText "retrom-service-config.json" (builtins.toJSON cfg.settings)
+              pkgs.writeText "retrom-service-config.json" (builtins.toJSON settings)
             else
               cfg.configFile
           }"
@@ -165,6 +101,6 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.settings.connection.port ];
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
   };
 }

@@ -8,6 +8,16 @@ in
     ../../modules/services/retrom.nix
   ];
 
+  sops.secrets = {
+    "retrom.json" = {
+      sopsFile = ./retrom.json;
+      format = "json";
+      key = "";
+      owner = "retrom";
+      group = "retrom";
+    };
+  };
+
   fileSystems = {
     "/exports/users" = {
       device = "/mnt/users";
@@ -131,7 +141,7 @@ in
 
         "retrom.local" = {
           locations."/" = {
-            proxyPass = "http://localhost:${toString config.services.retrom.settings.connection.port}";
+            proxyPass = "http://localhost:${toString config.services.retrom.port}";
           };
         };
       };
@@ -145,14 +155,8 @@ in
     };
     retrom = {
       enable = true;
-      settings = {
-        contentDirectories = [
-          {
-            path = "/mnt/games";
-            storageType = "MultiFileGame";
-          }
-        ];
-      };
+      enableDatabase = true;
+      configFile = secrets."retrom.json".path;
     };
   };
 }
