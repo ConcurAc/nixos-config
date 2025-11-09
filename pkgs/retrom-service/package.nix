@@ -43,7 +43,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   buildInputs = [
     openssl
-    protobuf_29
   ];
 
   buildPhase = ''
