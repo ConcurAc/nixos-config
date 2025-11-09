@@ -82,9 +82,20 @@
       device = "hub:/users";
       fsType = "nfs";
       options = [
-        "x-systemd.mount-timeout=5s"
+        "x-systemd.mount-timeout=3s"
         "soft"
-        "noauto"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/games" = {
+      device = "hub:/games";
+      fsType = "nfs";
+      options = [
+        "x-systemd.mount-timeout=3s"
+        "soft"
+        "nofail"
+        "noatime"
       ];
     };
   };
