@@ -69,7 +69,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     export NX_DAEMON=false
 
     # See https://github.com/nrwl/nx/issues/22445
-    cmd='pnpm nx build retrom-client --configuration prod --ci --no-sign --bundles ${bundle}'
+    cmd='pnpm nx build retrom-client --configuration prod --no-sign --bundles ${bundle}'
     script -c "$cmd" /dev/null
   '';
 
