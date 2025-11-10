@@ -23,6 +23,10 @@ in
       device = "/mnt/users";
       options = [ "bind" ];
     };
+    "/exports/games" = {
+      device = "/mnt/games";
+      options = [ "bind" ];
+    };
   };
 
   networking.firewall.allowedTCPPorts = [
@@ -37,6 +41,7 @@ in
       exports = ''
         /exports 192.168.1.0/24(rw,crossmnt,fsid=0)
         /exports/users 192.168.1.0/24(rw,insecure)
+        /exports/games 192.168.1.0/24(rw,insecure)
       '';
     };
     ollama = {
@@ -61,6 +66,7 @@ in
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
+      clientMaxBodySize = "100m";
       virtualHosts = {
         "ollama.local" = {
           locations."/" = {
