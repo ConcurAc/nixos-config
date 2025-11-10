@@ -4,9 +4,9 @@
   pkg-config,
   rustPlatform,
   cargo-tauri,
-  nodejs,
-  pnpm_9,
-  util-linux,
+  nodejs_24,
+  pnpm_10,
+  faketty,
   perl,
   protobuf_29,
   webkitgtk_4_1,
@@ -19,28 +19,28 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "retrom";
-  version = "0.7.42";
+  version = "0.7.43";
 
   src = fetchFromGitHub {
     owner = "JMBeresford";
     repo = "retrom";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-j2yMF2v2bI5s0pejagrz0mtCaN3OlL9ALS9nlVaqUl4=";
+    hash = "sha256-G9FnZJTrNIdPXL1OalmoHu0iF8aotc72AB4DMc/MhwM=";
   };
 
-  cargoHash = "sha256-iZMqLZQNA0FabjYf++NCcE+7nQjP2N++WHMv7d+K/50=";
-  buildAndTestSubdir = "packages/client";
-
-  pnpmDeps = pnpm_9.fetchDeps {
+  pnpmDeps = pnpm_10.fetchDeps {
     inherit (finalAttrs) pname version src;
     fetcherVersion = 2;
-    hash = "sha256-tP+sRWBzA6t1Quf6/N0GtpWgxnqpJkVXDrQMY5uOnyw=";
+    hash = "sha256-q+IUP3WZWSR2JRHCnQjrq8ndndQOf0GbalQ9GF4niJ4=";
   };
 
+  cargoHash = "sha256-b6pV25rFwMnQDHuLA+vCwDhMSZROkXfiorAvGgKMfN0=";
+  buildAndTestSubdir = "packages/client";
+
   nativeBuildInputs = [
-    nodejs
-    pnpm_9.configHook
-    util-linux
+    nodejs_24
+    pnpm_10.configHook
+    faketty
     pkg-config
     perl
     protobuf_29
@@ -62,8 +62,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     export NX_DAEMON=false
 
     # See https://github.com/nrwl/nx/issues/22445
-    cmd='pnpm nx build:desktop retrom-client-web'
-    script -c "$cmd" /dev/null
+    faketty pnpm nx build:desktop retrom-client-web
 
     runHook tauriBuildHook
   '';
@@ -75,6 +74,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
     homepage = "https://github.com/JMBeresford/retrom";
     license = licenses.gpl3;
     platforms = platforms.all;
-    mainProgram = finalAttrs.pname;
+    mainProgram = "Retrom";
   };
 })
