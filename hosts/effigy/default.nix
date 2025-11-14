@@ -23,7 +23,10 @@
       common-gpu-nvidia
       common-pc-laptop
       common-pc-ssd
-    ]);
+    ])
+    ++ [
+      ./disks.nix
+    ];
 
   boot = {
     plymouth.enable = true;
@@ -62,22 +65,6 @@
   };
 
   fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-uuid/2df715a3-c265-43c1-84f5-c7406fa518bb";
-      fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-uuid/B42A-5D36";
-      fsType = "vfat";
-      options = [
-        "fmask=0022"
-        "dmask=0022"
-      ];
-    };
-    "/home" = {
-      device = "/dev/disk/by-uuid/3c295ba2-ab0c-41d0-ae62-6718eeb7b66d";
-      fsType = "ext4";
-    };
     "/mnt/users" = {
       device = "hub:/users";
       fsType = "nfs";
@@ -152,6 +139,7 @@
 
   programs = {
     nix-ld.enable = true;
+    gamemode.enable = true;
     steam = {
       enable = true;
       extraCompatPackages = with pkgs; [
