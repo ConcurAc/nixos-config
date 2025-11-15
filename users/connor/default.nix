@@ -41,7 +41,6 @@ in
     packages = with pkgs; [
       home-manager
       brave
-      retrom
     ];
   };
 

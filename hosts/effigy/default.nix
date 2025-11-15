@@ -146,6 +146,7 @@
         proton-ge-bin
       ];
     };
+    retrom.enable = true;
   };
 
   services = {

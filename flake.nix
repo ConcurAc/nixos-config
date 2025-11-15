@@ -33,6 +33,10 @@
         quickshell.follows = "quickshell";
       };
     };
+    retrom = {
+      url = "github:concurac/retrom/nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,6 +48,7 @@
       stylix,
       nixvim,
       noctalia-shell,
+      retrom,
       ...
     }:
     {
@@ -56,6 +61,7 @@
           stylix.nixosModules.stylix
           nixvim.nixosModules.nixvim
           noctalia-shell.nixosModules.default
+          retrom.nixosModules.retrom
 
           ./hosts/effigy
           ./configuration.nix
@@ -76,6 +82,8 @@
           nixvim.nixosModules.nixvim
 
           noctalia-shell.nixosModules.default
+          retrom.nixosModules.retrom
+
           ./hosts/hub
           ./configuration.nix
           ./modules/terminal.nix
