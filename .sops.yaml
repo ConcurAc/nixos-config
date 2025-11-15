@@ -12,7 +12,7 @@ creation_rules:
       key_groups:
           - age:
                 - *effigy
-    - path_regex: hosts/hub/[^/]+\.(yaml|json)$
+    - path_regex: hosts/hub/[^/]+\.(yaml|json|env)$
       key_groups:
           - age:
                 - *hub
