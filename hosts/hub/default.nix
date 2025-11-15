@@ -122,9 +122,14 @@ in
     };
   };
 
-  environment.systemPackages = with pkgs.rocmPackages; [
-    rocm-core
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      waypipe
+    ]
+    ++ (with rocmPackages; [
+      rocm-core
+    ]);
 
   security = {
     pam.mount = {

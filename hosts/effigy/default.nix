@@ -177,6 +177,10 @@
     config.allowUnfree = true;
   };
 
+  environment.systemPackages = with pkgs; [
+    waypipe
+  ];
+
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     bluetooth.enable = true;
