@@ -4,13 +4,6 @@ let
     vi = "nvim";
     vim = "nvim";
   };
-  yaziSettings = {
-    yazi.mgr.ratio = [
-      2
-      4
-      3
-    ];
-  };
 in
 {
   environment = {
@@ -101,69 +94,38 @@ in
       inherit shellAliases;
     };
 
-    nixvim = {
-      enable = true;
-      plugins = {
-        lualine.enable = true;
-        lsp = {
-          enable = true;
-          servers = {
-            nixd.enable = true;
-            nil_ls.enable = true;
-            statix.enable = true;
-          };
-        };
-        treesitter = {
-          enable = true;
-          settings = {
-            highlight.enable = true;
-            indent.enable = true;
-          };
-        };
-        telescope.enable = true;
-        luasnip.enable = true;
-        lint.enable = true;
-        yazi = {
-          enable = true;
-          settings = yaziSettings;
-        };
-        cmp.enable = true;
-        cmp-fuzzy-buffer.enable = true;
-        cmp-fuzzy-path.enable = true;
-        cmp-nvim-lsp.enable = true;
-        cmp-treesitter.enable = true;
-        cmp_luasnip.enable = true;
-
-        nix.enable = true;
-        nix-develop.enable = true;
-        web-devicons.enable = true;
-      };
-    };
     yazi = {
       enable = true;
       settings = {
-        yazi.plugin.prepend_previewers = [
-          {
-            name = "*.md";
-            run = "rich-preview";
-          }
-          {
-            name = "*.csv";
-            run = "rich-preview";
-          }
-          {
-            name = "*.json";
-            run = "rich-preview";
-          }
-          {
-            name = "*.rst";
-            run = "rich-preview";
-          }
-          {
-            name = "*.ipynb";
-            run = "rich-preview";
-          }
-        ];
+        yazi = {
+          mgr.ratio = [
+            2
+            4
+            3
+          ];
+          plugin.prepend_previewers = [
+            {
+              name = "*.md";
+              run = "rich-preview";
+            }
+            {
+              name = "*.csv";
+              run = "rich-preview";
+            }
+            {
+              name = "*.json";
+              run = "rich-preview";
+            }
+            {
+              name = "*.rst";
+              run = "rich-preview";
+            }
+            {
+              name = "*.ipynb";
+              run = "rich-preview";
+            }
+          ];
+        };
         keymap = {
           mgr.prepend_keymap = [
             {
@@ -178,7 +140,7 @@ in
             }
           ];
         };
-      } // yaziSettings;
+      };
       plugins = with pkgs.yaziPlugins; {
         inherit restore mount rich-preview;
       };

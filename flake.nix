@@ -52,59 +52,69 @@
       ...
     }:
     {
-      nixosConfigurations.effigy = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.default
-          stylix.nixosModules.stylix
-          nixvim.nixosModules.nixvim
-          noctalia-shell.nixosModules.default
-          retrom.nixosModules.retrom
+      nixosConfigurations = {
+        effigy = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            sops-nix.nixosModules.sops
 
-          ./hosts/effigy
-          ./configuration.nix
-          ./modules/terminal.nix
+            stylix.nixosModules.stylix
+            nixvim.nixosModules.nixvim
 
-          ./modules/desktop/niri.nix
+            retrom.nixosModules.retrom
 
-          ./users/connor
-        ];
-      };
+            ./hosts/effigy
+            ./configuration.nix
+            ./modules/terminal.nix
+            ./modules/neovim.nix
 
-      nixosConfigurations.hub = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
-          nixvim.nixosModules.nixvim
+            ./modules/desktop/niri.nix
 
-          noctalia-shell.nixosModules.default
-          retrom.nixosModules.retrom
+            ./users/connor
+          ];
+        };
 
-          ./hosts/hub
-          ./configuration.nix
-          ./modules/terminal.nix
+        hub = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            sops-nix.nixosModules.sops
 
-          ./modules/desktop/niri.nix
+            stylix.nixosModules.stylix
+            nixvim.nixosModules.nixvim
 
-          ./users/connor
-          ./users/kendrick
-          ./users/liam
-        ];
-      };
+            noctalia-shell.nixosModules.default
+            retrom.nixosModules.retrom
 
-      nixosConfigurations.cadence = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
-          ./hosts/cadence
-          ./configuration.nix
-          ./modules/terminal.nix
-        ];
+            ./hosts/hub
+            ./configuration.nix
+            ./modules/terminal.nix
+            ./modules/neovim.nix
+
+            ./modules/desktop/niri.nix
+
+            ./users/connor
+            ./users/kendrick
+            ./users/liam
+          ];
+        };
+
+        cadence = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            sops-nix.nixosModules.sops
+
+            stylix.nixosModules.stylix
+
+            ./hosts/cadence
+            ./configuration.nix
+            ./modules/terminal.nix
+
+            ./users/connor
+          ];
+        };
       };
     };
 }

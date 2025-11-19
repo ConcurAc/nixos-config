@@ -1,7 +1,7 @@
 {
   disko.devices = {
     disk = {
-      eMMC = {
+      embedded = {
         device = "/dev/mmcblk0";
         type = "disk";
         content = {

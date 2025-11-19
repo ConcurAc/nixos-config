@@ -138,6 +138,7 @@
   };
 
   programs = {
+    gnupg.agent.enable = true;
     nix-ld.enable = true;
     gamemode.enable = true;
     steam = {

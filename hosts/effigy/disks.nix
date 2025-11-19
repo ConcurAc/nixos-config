@@ -1,7 +1,7 @@
 {
   disko.devices = {
     disk = {
-      conductor = {
+      internal = {
         device = "/dev/disk/by-path/pci-0000:3b:00.0-nvme-1";
         type = "disk";
         content = {

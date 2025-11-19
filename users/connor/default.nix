@@ -5,6 +5,7 @@
   ...
 }:
 let
+  inherit (config.sops) secrets;
   cfg = config.users.users.connor;
   userKeyFile = "${cfg.home}/.config/sops/age/keys.txt";
 in
@@ -19,7 +20,7 @@ in
     ];
 
   sops.secrets = {
-    connor-passwd = {
+    "connor/passwd" = {
       sopsFile = ./secrets.yaml;
       neededForUsers = true;
     };
@@ -29,7 +30,7 @@ in
     isNormalUser = true;
     uid = 1000;
     home = "/home/connor";
-    hashedPasswordFile = config.sops.secrets.connor-passwd.path;
+    hashedPasswordFile = secrets."connor/passwd".path;
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -37,31 +38,26 @@ in
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a"
     ];
-    shell = pkgs.fish;
-    packages = with pkgs; [
-      home-manager
-      brave
-    ];
+    shell = pkgs.nushell;
   };
 
   user-containers.users.connor = {
     enable = true;
     withMacvlan = true;
     bindMounts = {
-      ${userKeyFile}.hostPath = config.sops.age.keyFile;
+      ${userKeyFile}.hostPath = secrets.age.keyFile;
     };
     config = {
       imports =
         with inputs;
         [
           sops-nix.nixosModules.sops
-          nixvim.nixosModules.nixvim
         ]
         ++ [
           ../../modules/terminal.nix
-          ./container.nix
+          ./container
         ];
-      sops.age.keyFile = userKeyFile;
+      sops.age.keyFile = secrets.age.keyFile;
     };
   };
 

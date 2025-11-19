@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 let
   cfg = config.users.users.connor;
   cfgPhotoPrism = config.services.photoprism;
