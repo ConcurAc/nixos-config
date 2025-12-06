@@ -45,7 +45,7 @@ in
     enable = true;
     withMacvlan = true;
     bindMounts = {
-      ${userKeyFile}.hostPath = secrets.age.keyFile;
+      ${userKeyFile}.hostPath = config.sops.age.keyFile;
     };
     config = {
       imports =
