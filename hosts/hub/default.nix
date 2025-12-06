@@ -174,7 +174,16 @@ in
   user-containers = {
     enable = true;
     withGPU = true;
-    interface =  }
+    interface = "enp7s0";
+    allowedDevices = [
+      {
+        node = "/dev/dri/renderD128";
+        modifier = "rw";
+      }
+      {
+        node = "/dev/dri/renderD129";
+        modifier = "rw";
+      }
     ];
   };
 }

@@ -13,10 +13,28 @@ in
       type = types.nullOr types.str;
       description = "The physical network interface for the containers.";
     };
-    withGPU = mkOption {
-      type = types.bool;
-      description = "Pass gpu through to container.";
-      default = false;
+    allowedDevices = mkOption {
+      type = types.listOf (
+        types.submodule {
+          options = {
+            node = mkOption {
+              type = types.str;
+              description = "Path to device node.";
+              example = "/dev/net/tun";
+            };
+            modifier = mkOption {
+              type = types.str;
+              description = ''
+                Device node access modifier. Takes a combination `r` (read), `w` (write), and `m` (mknod).
+                See the `systemd.resource-control(5)` man page for more information.
+              '';
+              example = "rw";
+            };
+          };
+        }
+      );
+      description = "List of devices to allow access to container.";
+      default = [ ];
     };
     users = mkOption {
       type = types.attrsOf (
@@ -65,21 +83,14 @@ in
   };
   config = lib.mkIf cfg.enable {
     containers = lib.mapAttrs (
-      name:
-      container:
+      name: container:
       let
         cfgUser = config.users.users.${name};
       in
       (lib.mkIf container.enable {
+        inherit (cfg) allowedDevices;
         autoStart = true;
         macvlans = lib.mkIf container.withMacvlan [ cfg.interface ];
-
-        allowedDevices = [
-          (lib.mkIf container.withGPU {
-            node = "/dev/dri";
-            modifier = "rw";
-          })
-        ];
 
         bindMounts = {
           ${cfgUser.hashedPasswordFile}.hostPath = lib.mkIf (
