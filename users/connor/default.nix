@@ -93,5 +93,14 @@ in
         options="allow_other"
       />
     ''
+    ''
+      <volume
+        user="${cfg.name}"
+        mountpoint="/mnt/users/${cfg.name}/games"
+        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@games"
+        fstype="fuse"
+        options="allow_other"
+      />
+    ''
   ];
 }
