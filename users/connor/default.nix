@@ -52,12 +52,17 @@ in
         with inputs;
         [
           sops-nix.nixosModules.sops
+          stylix.nixosModules.stylix
         ]
         ++ [
           ../../modules/terminal.nix
           ./container
         ];
-      sops.age.keyFile = secrets.age.keyFile;
+      sops.age.keyFile = userKeyFile;
+      stylix = {
+        enable = true;
+        base16Scheme = "${pkgs.base16-schemes}/share/themes/brewer.yaml";
+      };
     };
   };
 
