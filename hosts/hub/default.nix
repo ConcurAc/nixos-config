@@ -145,7 +145,7 @@ in
     with pkgs;
     [
       waypipe
-      cage
+      xwayland-run
     ]
     ++ (with rocmPackages; [
       rocm-core
