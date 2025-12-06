@@ -28,6 +28,8 @@ in
       dust
       tlrc
       broot
+      hexyl
+      bottom
 
       sops
 
