@@ -20,7 +20,7 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs"; See https://github.com/nix-community/nixvim/issues/4023
     };
     retrom = {
       url = "github:concurac/retrom/nix-flake";
