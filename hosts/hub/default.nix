@@ -121,7 +121,6 @@ in
       enable = true;
       pulse.enable = true;
     };
-    noctalia-shell.enable = true;
   };
 
   programs = {

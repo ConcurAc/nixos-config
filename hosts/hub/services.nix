@@ -5,7 +5,6 @@ in
 {
   imports = [
     ../../modules/services/invoke-ai.nix
-    ../../modules/services/retrom.nix
   ];
 
   sops.secrets = {

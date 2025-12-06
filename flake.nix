@@ -22,17 +22,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    quickshell = {
-      url = "github:outfoxxed/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia-shell = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        quickshell.follows = "quickshell";
-      };
-    };
     retrom = {
       url = "github:concurac/retrom/nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -47,7 +36,6 @@
       home-manager,
       stylix,
       nixvim,
-      noctalia-shell,
       retrom,
       ...
     }:
@@ -84,7 +72,6 @@
             stylix.nixosModules.stylix
             nixvim.nixosModules.nixvim
 
-            noctalia-shell.nixosModules.default
             retrom.nixosModules.retrom
 
             ./hosts/hub

@@ -48,10 +48,6 @@ in
     extraConfig = "Defaults pwfeedback";
   };
 
-  services = {
-    openssh.enable = true;
-  };
-
   programs = {
     git.enable = true;
     tmux.enable = true;

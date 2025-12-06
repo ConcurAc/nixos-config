@@ -1,11 +1,5 @@
 { pkgs, ... }:
 {
-  nixpkgs.overlays = [
-    (self: super: {
-      retrom = super.callPackage ./pkgs/retrom/package.nix {};
-      retrom-service = super.callPackage ./pkgs/retrom-service/package.nix {};
-    })
-  ];
 
   nix = {
     gc = {
@@ -25,6 +19,10 @@
   console = {
     font = "ter-v20b";
     packages = with pkgs; [ terminus_font ];
+  };
+
+  services = {
+    openssh.enable = true;
   };
 
   security.sudo-rs.enable = true;
