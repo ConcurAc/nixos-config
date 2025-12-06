@@ -13,6 +13,11 @@ in
       type = types.nullOr types.str;
       description = "The physical network interface for the containers.";
     };
+    withGPU = mkOption {
+      type = types.bool;
+      description = "Pass gpu through to container.";
+      default = false;
+    };
     allowedDevices = mkOption {
       type = types.listOf (
         types.submodule {
