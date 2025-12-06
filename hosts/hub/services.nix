@@ -21,11 +21,45 @@ in
   fileSystems = {
     "/exports/users" = {
       device = "/mnt/users";
-      options = [ "bind" ];
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/exports/media" = {
+      device = "/mnt/users";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/exports/gallery" = {
+      device = "/mnt/users";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/exports/archives" = {
+      device = "/mnt/archives";
+      options = [
+        "bind"
+        "nofail"
+      ];
     };
     "/exports/games" = {
       device = "/mnt/games";
-      options = [ "bind" ];
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/exports/steam" = {
+      device = "/mnt/steam";
+      options = [
+        "bind"
+        "nofail"
+      ];
     };
   };
 
@@ -41,7 +75,11 @@ in
       exports = ''
         /exports 192.168.1.0/24(rw,crossmnt,fsid=0)
         /exports/users 192.168.1.0/24(rw,insecure)
+        /exports/media 192.168.1.0/24(rw,insecure)
+        /exports/gallery 192.168.1.0/24(rw,insecure)
+        /exports/archives 192.168.1.0/24(rw,insecure)
         /exports/games 192.168.1.0/24(rw,insecure)
+        /exports/steam 192.168.1.0/24(rw,insecure)
       '';
     };
     ollama = {

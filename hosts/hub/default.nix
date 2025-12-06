@@ -44,16 +44,6 @@ in
         "noatime"
       ];
     };
-    "/mnt/games" = {
-      device = "/dev/disk/by-label/Collection";
-      options = [
-        "x-systemd.mount-timeout=15s"
-        "subvol=@games"
-        "compress=zstd"
-        "nofail"
-        "noatime"
-      ];
-    };
     "/mnt/media" = {
       device = "/dev/disk/by-label/Collection";
       options = [
@@ -69,6 +59,36 @@ in
       options = [
         "x-systemd.mount-timeout=15s"
         "subvol=@gallery"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/archives" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@archives"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/games" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@games"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/mnt/steam" = {
+      device = "/dev/disk/by-label/Collection";
+      options = [
+        "x-systemd.mount-timeout=15s"
+        "subvol=@steam"
         "compress=zstd"
         "nofail"
         "noatime"
@@ -126,6 +146,7 @@ in
     with pkgs;
     [
       waypipe
+      cage
     ]
     ++ (with rocmPackages; [
       rocm-core
@@ -154,6 +175,7 @@ in
   user-containers = {
     enable = true;
     withGPU = true;
-    interface = "enp7s0";
+    interface =  }
+    ];
   };
 }
