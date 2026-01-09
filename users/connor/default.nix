@@ -71,15 +71,7 @@ in
   security.pam.mount.extraVolumes = [
     # CAN SOMEONE ACCEPT MY PR SO I CAN GET RID OF THIS
     # https://github.com/NixOS/nixpkgs/pull/453507
-    ''<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin</path>''
-    ''
-      <volume
-        user="${cfg.name}"
-        mountpoint="${cfg.home}/Media"
-        path="gocryptfs#${cfg.home}/.crypt/media"
-        fstype="fuse"
-      />
-    ''
+    ''<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin:${pkgs.mergerfs}/bin</path>''
     ''
       <volume
         user="${cfg.name}"
@@ -105,6 +97,24 @@ in
         path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@games"
         fstype="fuse"
         options="allow_other"
+      />
+    ''
+    ''
+      <volume
+        user="${cfg.name}"
+        mountpoint="${cfg.home}/Media"
+        path="gocryptfs#${cfg.home}/.crypt/media"
+        fstype="fuse"
+      />
+    ''
+    ''
+      <volume
+        user="${cfg.name}"
+        mountpoint="${cfg.home}/Games"
+        path="mergerfs#${cfg.home}/.games:/mnt/users/${cfg.name}/games=RO:/mnt/games=RO"
+        options="follow-symlinks=directory,category.create=ff"
+        fstype="fuse"
+        noroot="0"
       />
     ''
   ];
