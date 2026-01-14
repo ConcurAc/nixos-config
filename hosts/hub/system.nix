@@ -17,18 +17,30 @@
   ]);
 
   boot = {
-    initrd.availableKernelModules = [
-      "nvme"
-      "xhci_pci"
-      "ahci"
-      "thunderbolt"
-      "usb_storage"
-      "usbhid"
-      "sd_mod"
-    ];
+    initrd = {
+      availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "thunderbolt"
+        "usb_storage"
+        "usbhid"
+        "sd_mod"
+      ];
+      kernelModules = [
+        "vfio_pci"
+        "vfio"
+        "vfio_iommu_type1"
+        "vfio_virqfd"
+      ];
+    };
     kernelModules = [ "kvm-amd" ];
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" ];
+    kernelParams = [
+      "quiet"
+      "amd_iommu=on"
+      "vfio-pci.ids=03:00.0,03:00.1"
+    ];
 
     loader = {
       grub = {

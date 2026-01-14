@@ -26,14 +26,14 @@ in
       ];
     };
     "/exports/media" = {
-      device = "/mnt/users";
+      device = "/mnt/media";
       options = [
         "bind"
         "nofail"
       ];
     };
     "/exports/gallery" = {
-      device = "/mnt/users";
+      device = "/mnt/gallery";
       options = [
         "bind"
         "nofail"
@@ -77,8 +77,8 @@ in
         /exports/media 192.168.1.0/24(rw,insecure)
         /exports/gallery 192.168.1.0/24(rw,insecure)
         /exports/archives 192.168.1.0/24(rw,insecure)
-        /exports/games 192.168.1.0/24(rw,insecure)
         /exports/steam 192.168.1.0/24(rw,insecure)
+        /exports/games 192.168.1.0/24(r,insecure)
       '';
     };
     ollama = {
