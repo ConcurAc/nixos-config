@@ -75,8 +75,8 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="/srv/users/${cfg.name}/media"
-        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@media"
+        mountpoint="/srv/users/${cfg.name}/archives"
+        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@archives"
         fstype="fuse"
         options="allow_other"
       />
@@ -84,8 +84,8 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="/srv/users/${cfg.name}/archives"
-        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@archives"
+        mountpoint="/srv/users/${cfg.name}/media"
+        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@media"
         fstype="fuse"
         options="allow_other"
       />
