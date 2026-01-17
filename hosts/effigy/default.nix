@@ -61,7 +61,7 @@
   };
 
   fileSystems = {
-    "/mnt/users" = {
+    "/srv/users" = {
       device = "hub:/users";
       fsType = "nfs";
       options = [
@@ -71,7 +71,7 @@
         "noatime"
       ];
     };
-    "/mnt/archives" = {
+    "/srv/archives" = {
       device = "hub:/archives";
       fsType = "nfs";
       options = [
@@ -81,7 +81,7 @@
         "noatime"
       ];
     };
-    "/mnt/games" = {
+    "/srv/games" = {
       device = "hub:/games";
       fsType = "nfs";
       options = [
@@ -91,7 +91,7 @@
         "noatime"
       ];
     };
-    "/mnt/steam" = {
+    "/srv/steam" = {
       device = "hub:/steam";
       fsType = "nfs";
       options = [

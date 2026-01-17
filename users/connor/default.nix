@@ -71,12 +71,12 @@ in
   security.pam.mount.extraVolumes = [
     # CAN SOMEONE ACCEPT MY PR SO I CAN GET RID OF THIS
     # https://github.com/NixOS/nixpkgs/pull/453507
-    ''<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin:${pkgs.mergerfs}/bin</path>''
+    "<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin:${pkgs.mergerfs}/bin</path>"
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="/mnt/users/${cfg.name}/media"
-        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@media"
+        mountpoint="/srv/users/${cfg.name}/media"
+        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@media"
         fstype="fuse"
         options="allow_other"
       />
@@ -84,8 +84,8 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="/mnt/users/${cfg.name}/archives"
-        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@archives"
+        mountpoint="/srv/users/${cfg.name}/archives"
+        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@archives"
         fstype="fuse"
         options="allow_other"
       />
@@ -93,8 +93,8 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="/mnt/users/${cfg.name}/games"
-        path="gocryptfs#/mnt/users/${cfg.name}/.crypt/@games"
+        mountpoint="/srv/users/${cfg.name}/games"
+        path="gocryptfs#/srv/users/${cfg.name}/.crypt/@games"
         fstype="fuse"
         options="allow_other"
       />
@@ -111,7 +111,7 @@ in
       <volume
         user="${cfg.name}"
         mountpoint="${cfg.home}/Games"
-        path="mergerfs#${cfg.home}/.games:/mnt/users/${cfg.name}/games=RO:/mnt/games=RO"
+        path="mergerfs#${cfg.home}/.games:/srv/users/${cfg.name}/games=RO:/srv/games=RO"
         options="follow-symlinks=directory,category.create=ff"
         fstype="fuse"
         noroot="0"

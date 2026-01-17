@@ -34,7 +34,7 @@ in
   users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
   fileSystems = {
-    "/mnt/users" = {
+    "/srv/users" = {
       device = "/dev/disk/by-label/Collection";
       options = [
         "x-systemd.mount-timeout=15s"
@@ -44,7 +44,7 @@ in
         "noatime"
       ];
     };
-    "/mnt/media" = {
+    "/srv/media" = {
       device = "/dev/disk/by-label/Collection";
       options = [
         "x-systemd.mount-timeout=15s"
@@ -64,7 +64,7 @@ in
         "noatime"
       ];
     };
-    "/mnt/archives" = {
+    "/srv/archives" = {
       device = "/dev/disk/by-label/Collection";
       options = [
         "x-systemd.mount-timeout=15s"
@@ -74,7 +74,7 @@ in
         "noatime"
       ];
     };
-    "/mnt/games" = {
+    "/srv/games" = {
       device = "/dev/disk/by-label/Collection";
       options = [
         "x-systemd.mount-timeout=15s"
@@ -84,7 +84,7 @@ in
         "noatime"
       ];
     };
-    "/mnt/steam" = {
+    "/srv/steam" = {
       device = "/dev/disk/by-label/Collection";
       options = [
         "x-systemd.mount-timeout=15s"

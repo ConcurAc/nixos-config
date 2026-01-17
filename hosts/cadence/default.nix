@@ -32,7 +32,7 @@ in
   users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
   fileSystems = {
-    "/mnt/users" = {
+    "/srv/users" = {
       device = "hub:/users";
       fsType = "nfs";
       options = [
@@ -42,18 +42,8 @@ in
         "noatime"
       ];
     };
-    "/mnt/archives" = {
+    "/srv/archives" = {
       device = "hub:/archives";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-    "/mnt/games" = {
-      device = "hub:/games";
       fsType = "nfs";
       options = [
         "x-systemd.mount-timeout=3s"

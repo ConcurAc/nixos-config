@@ -19,42 +19,35 @@ in
 
   fileSystems = {
     "/exports/users" = {
-      device = "/mnt/users";
+      device = "/srv/users";
       options = [
         "bind"
         "nofail"
       ];
     };
     "/exports/media" = {
-      device = "/mnt/media";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/exports/gallery" = {
-      device = "/mnt/gallery";
+      device = "/srv/media";
       options = [
         "bind"
         "nofail"
       ];
     };
     "/exports/archives" = {
-      device = "/mnt/archives";
+      device = "/srv/archives";
       options = [
         "bind"
         "nofail"
       ];
     };
     "/exports/games" = {
-      device = "/mnt/games";
+      device = "/srv/games";
       options = [
         "bind"
         "nofail"
       ];
     };
     "/exports/steam" = {
-      device = "/mnt/steam";
+      device = "/srv/steam";
       options = [
         "bind"
         "nofail"
