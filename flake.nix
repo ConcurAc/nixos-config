@@ -93,11 +93,13 @@
             disko.nixosModules.disko
             sops-nix.nixosModules.sops
 
+            nixvim.nixosModules.nixvim
             stylix.nixosModules.stylix
 
             ./hosts/cadence
             ./configuration.nix
             ./modules/terminal.nix
+            ./modules/neovim.nix
 
             ./users/connor
           ];
