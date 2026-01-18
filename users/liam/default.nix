@@ -1,7 +1,11 @@
 {
+  config,
   pkgs,
   ...
 }:
+let
+  cfg = config.users.users.liam;
+in
 {
   users = {
     users.liam = {
