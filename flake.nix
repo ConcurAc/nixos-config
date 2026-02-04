@@ -26,6 +26,10 @@
       url = "github:concurac/retrom/nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -36,6 +40,7 @@
       home-manager,
       stylix,
       nixvim,
+      nix-minecraft,
       retrom,
       ...
     }:
@@ -63,7 +68,7 @@
           ];
         };
 
-        hub = nixpkgs.lib.nixosSystem {
+        opus = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
             disko.nixosModules.disko
@@ -72,9 +77,10 @@
             stylix.nixosModules.stylix
             nixvim.nixosModules.nixvim
 
+            nix-minecraft.nixosModules.minecraft-servers
             retrom.nixosModules.retrom
 
-            ./hosts/hub
+            ./hosts/opus
             ./configuration.nix
             ./modules/terminal.nix
             ./modules/neovim.nix

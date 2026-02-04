@@ -1,21 +1,23 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
   cfg = config.users.users.connor;
-  cfgPhotoPrism = config.services.photoprism;
-  cfgTrilium = config.services.trilium-server;
   secrets = config.sops.secrets;
 in
 {
   sops = {
+    defaultSopsFile = ./secrets.yaml;
     secrets = {
-      syncthing-passwd = {
-        sopsFile = ./secrets.yaml;
-        owner = "syncthing";
-        group = "syncthing";
+      "pki/nginx.key" = lib.mkIf config.services.nginx.enable {
+        key = "pki/self.key";
+        owner = config.services.nginx.user;
+        group = config.services.nginx.group;
       };
-      photoprism-passwd = {
-        sopsFile = ./secrets.yaml;
+      "pki/nginx.crt" = lib.mkIf config.services.nginx.enable {
+        key = "pki/self.crt";
+        owner = config.services.nginx.user;
+        group = config.services.nginx.group;
       };
+
       "livebook.env" = {
         sopsFile = ./livebook.env;
         format = "dotenv";
@@ -28,28 +30,14 @@ in
 
   networking = {
     firewall.allowedTCPPorts = [
-      80
-      443
+      80 # http
+      443 # https
     ];
   };
 
   console.enable = true;
   services = {
     openssh.enable = true;
-    syncthing = {
-      enable = true;
-      openDefaultPorts = true;
-      guiPasswordFile = secrets.syncthing-passwd.path;
-    };
-    photoprism = {
-      enable = true;
-      originalsPath = "/mnt/gallery";
-      settings = {
-        PHOTOPRISM_ADMIN_USER = cfg.name;
-        PHOTOPRISM_ADMIN_PASSWORD_FILE = secrets.photoprism-passwd.path;
-        PHOTOPRISM_DATABASE_PASSWORD = secrets.photoprism-passwd.path;
-      };
-    };
     trilium-server = {
       enable = true;
     };
@@ -63,24 +51,19 @@ in
     nginx = {
       enable = true;
       virtualHosts = {
-        "photoprism.connor.me" = {
+        "notes.connor.home.arpa" = {
+          addSSL = true;
+          sslCertificateKey = secrets."pki/nginx.key".path;
+          sslCertificate = secrets."pki/nginx.crt".path;
           locations."/" = {
-            proxyPass = "http://${cfgPhotoPrism.address}:${toString cfgPhotoPrism.port}";
+            proxyPass = "http://localhost:${toString config.services.trilium-server.port}";
             proxyWebsockets = true;
           };
         };
-        "syncthing.connor.me" = {
-          locations."/" = {
-            proxyPass = "http://${config.services.syncthing.guiAddress}";
-          };
-        };
-        "trilium.connor.me" = {
-          locations."/" = {
-            proxyPass = "http://${cfgTrilium.host}:${toString cfgTrilium.port}";
-            proxyWebsockets = true;
-          };
-        };
-        "livebook.connor.me" = {
+        "livebook.connor.home.arpa" = {
+          addSSL = true;
+          sslCertificateKey = secrets."pki/nginx.key".path;
+          sslCertificate = secrets."pki/nginx.crt".path;
           locations."/" = {
             proxyPass = "http://localhost:${toString config.services.livebook.environment.LIVEBOOK_PORT}";
           };

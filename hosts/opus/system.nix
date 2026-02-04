@@ -31,16 +31,18 @@
         "vfio_pci"
         "vfio"
         "vfio_iommu_type1"
-        "vfio_virqfd"
       ];
     };
-    kernelModules = [ "kvm-amd" ];
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [
+      "kvm-amd"
+      "kvmfr"
+    ];
     kernelParams = [
       "quiet"
       "amd_iommu=on"
       "vfio-pci.ids=03:00.0,03:00.1"
     ];
+    kernelPackages = pkgs.linuxPackages_zen;
 
     loader = {
       grub = {
