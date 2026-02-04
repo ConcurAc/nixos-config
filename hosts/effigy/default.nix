@@ -1,117 +1,17 @@
 {
-  inputs,
   config,
   lib,
   pkgs,
-  modulesPath,
   ...
 }:
 
 {
-  imports =
-    with inputs;
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
-      disko.nixosModules.disko
-      sops-nix.nixosModules.sops
-    ]
-    ++ (with nixos-hardware.nixosModules; [
-      common-cpu-intel
-      common-gpu-nvidia
-      common-pc-laptop
-      common-pc-ssd
-    ])
-    ++ [
-      ./disks.nix
-    ];
+  imports = [
+    ./disks.nix
+    ./system.nix
+  ];
 
-  boot = {
-    plymouth.enable = true;
-    initrd = {
-      availableKernelModules = [
-        "xhci_pci"
-        "ahci"
-        "nvme"
-        "sdhci_pci"
-      ];
-      kernelModules = [ "dm-snapshot" ];
-    };
-    kernelModules =
-      if (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") then
-        [
-          "kvm-intel"
-          "hp-wmi"
-        ]
-      else
-        [
-          "kvm-intel"
-        ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" ];
-
-    loader = {
-      grub = {
-        device = "nodev";
-        efiSupport = true;
-      };
-      efi.canTouchEfiVariables = true;
-    };
-
-    tmp.useZram = true;
-  };
-
-  fileSystems = {
-    "/srv/library" = {
-      device = "opus.home.arpa:/library";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-    "/srv/users" = {
-      device = "opus.home.arpa:/users";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-    "/srv/archives" = {
-      device = "opus.home.arpa:/archives";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-    "/srv/games" = {
-      device = "opus.home.arpa:/games";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-    "/srv/steam" = {
-      device = "opus.home.arpa:/steam";
-      fsType = "nfs";
-      options = [
-        "x-systemd.mount-timeout=3s"
-        "soft"
-        "nofail"
-        "noatime"
-      ];
-    };
-  };
+  nixpkgs.config.allowUnfree = true;
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
@@ -127,9 +27,13 @@
     };
   };
 
+  boot.plymouth.enable = true;
+
   security = {
     pki.certificates = [
       ''
+        self-signed
+        ===========
         -----BEGIN CERTIFICATE-----
         MIIFcTCCA1mgAwIBAgIUT3kSGROdPJps+aICyB9ADf1c1qgwDQYJKoZIhvcNAQEL
         BQAwSDELMAkGA1UEBhMCQVUxETAPBgNVBAgMCFZpY3RvcmlhMRIwEAYDVQQHDAlN
@@ -178,8 +82,67 @@
     };
   };
 
+  fileSystems = {
+    "/srv/library" = {
+      device = "opus.home.arpa:/library";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/srv/users" = {
+      device = "opus.home.arpa:/users";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/srv/archives" = {
+      device = "opus.home.arpa:/archives";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/srv/games" = {
+      device = "opus.home.arpa:/games";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/srv/steam" = {
+      device = "opus.home.arpa:/steam";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+  };
+
   networking = {
     hostName = "effigy";
+    useDHCP = lib.mkDefault true;
     networkmanager = {
       enable = true;
       wifi = {
@@ -187,7 +150,6 @@
         powersave = true;
       };
     };
-    useDHCP = lib.mkDefault true;
     wg-quick.interfaces = {
       home = {
         autostart = false;
@@ -213,6 +175,16 @@
   };
 
   services = {
+    xserver.videoDrivers = [
+      "nvidia"
+      "intel"
+    ];
+    udisks2.enable = true;
+    upower.enable = true;
+    pipewire = {
+      enable = true;
+      jack.enable = true;
+    };
     greetd = {
       enable = true;
       useTextGreeter = true;
@@ -223,60 +195,17 @@
         };
       };
     };
-    xserver.videoDrivers = [
-      "nvidia"
-      "intel"
-    ];
-    pipewire = {
-      enable = true;
-      jack.enable = true;
-    };
-    udisks2.enable = true;
     power-profiles-daemon.enable = true;
-    upower.enable = true;
-  };
-
-  nixpkgs = {
-    hostPlatform = lib.mkDefault "x86_64-linux";
-    config.allowUnfree = true;
+    clamav = {
+      daemon.enable = true;
+      scanner.enable = true;
+      updater.enable = true;
+    };
   };
 
   environment.systemPackages = with pkgs; [
     waypipe
   ];
-
-  hardware = {
-    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    bluetooth.enable = true;
-    graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
-    nvidia = {
-      open = true;
-      modesetting.enable = true;
-      nvidiaSettings = false;
-      prime = {
-        offload = {
-          enable = true;
-          enableOffloadCmd = true;
-        };
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
-      powerManagement = {
-        enable = true;
-        finegrained = true;
-      };
-    };
-  };
-
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
-  };
-
-  zramSwap.enable = true;
 
   fonts = {
     packages = with pkgs; [
