@@ -1,33 +1,33 @@
 keys:
-    - &connor ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a
-    - &effigy age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
-    - &opus age1e5z8s7phct8cega2lytgqvm99g7um75tsmxvhz32wk3ptg5gjuqqu5cgk6
-    - &cadence age1t9k8pfz8slz878tcrv2v4dmxw8w7wxhcgyg9na82a8vf4qlkpuzqpet3vw
+  - &connor ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a
+  - &effigy age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
+  - &hub age1e5z8s7phct8cega2lytgqvm99g7um75tsmxvhz32wk3ptg5gjuqqu5cgk6
+  - &cadence age1t9k8pfz8slz878tcrv2v4dmxw8w7wxhcgyg9na82a8vf4qlkpuzqpet3vw
 creation_rules:
-    - path_regex: users/connor/[^/]+\.(yaml)$
-      key_groups:
-          - age:
-                - *connor
-                - *effigy
-                - *opus
-                - *cadence
-    - path_regex: users/connor/container/[^/]+\.(yaml|env)$
-      key_groups:
-          - age:
-                - *connor
-                - *opus
-    - path_regex: hosts/effigy/[^/]+\.(yaml|env|conf)$
-      key_groups:
-          - age:
-                - *connor
-                - *effigy
-    - path_regex: hosts/opus/[^/]+\.(yaml|json|env|conf)$
-      key_groups:
-          - age:
-                - *connor
-                - *opus
-    - path_regex: hosts/cadence/[^/]+\.(yaml|conf)$
-      key_groups:
-          - age:
-                - *connor
-                - *cadence
+  - path_regex: users/connor/[^/]+\.(yaml)$
+    key_groups:
+      - age:
+          - *connor
+          - *effigy
+          - *hub
+          - *cadence
+  - path_regex: users/connor/container/[^/]+\.(yaml|env)$
+    key_groups:
+      - age:
+          - *connor
+          - *hub
+  - path_regex: hosts/effigy/[^/]+\.(yaml|conf)$
+    key_groups:
+      - age:
+          - *connor
+          - *effigy
+  - path_regex: hosts/hub/[^/]+\.(yaml|json|env)$
+    key_groups:
+      - age:
+          - *connor
+          - *hub
+  - path_regex: hosts/cadence/[^/]+\.(yaml|conf)$
+    key_groups:
+      - age:
+          - *connor
+          - *cadence

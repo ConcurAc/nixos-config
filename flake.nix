@@ -20,7 +20,7 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      # inputs.nixpkgs.follows = "nixpkgs"; See https://github.com/nix-community/nixvim/issues/4023
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     retrom = {
       url = "github:concurac/retrom/nix-flake";
@@ -103,6 +103,24 @@
             stylix.nixosModules.stylix
 
             ./hosts/cadence
+            ./configuration.nix
+            ./modules/terminal.nix
+            ./modules/neovim.nix
+
+            ./users/connor
+          ];
+        };
+
+        insomnia = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            sops-nix.nixosModules.sops
+
+            stylix.nixosModules.stylix
+            nixvim.nixosModules.nixvim
+
+            ./hosts/insomnia
             ./configuration.nix
             ./modules/terminal.nix
             ./modules/neovim.nix
