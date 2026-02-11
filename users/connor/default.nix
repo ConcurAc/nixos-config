@@ -24,6 +24,18 @@ in
       sopsFile = ./secrets.yaml;
       neededForUsers = true;
     };
+    "connor/ssh/private" = {
+      sopsFile = ./secrets.yaml;
+      path = "${cfg.home}/.ssh/id_ed25519";
+      owner = cfg.name;
+      group = cfg.group;
+    };
+    "connor/ssh/public" = {
+      sopsFile = ./secrets.yaml;
+      path = "${cfg.home}/.ssh/id_ed25519.pub";
+      owner = cfg.name;
+      group = cfg.group;
+    };
   };
 
   users.users.connor = {
