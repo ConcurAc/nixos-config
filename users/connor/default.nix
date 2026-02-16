@@ -24,15 +24,9 @@ in
       sopsFile = ./secrets.yaml;
       neededForUsers = true;
     };
-    "connor/ssh/private" = {
+    "connor/age" = {
       sopsFile = ./secrets.yaml;
-      path = "${cfg.home}/.ssh/id_ed25519";
-      owner = cfg.name;
-      group = cfg.group;
-    };
-    "connor/ssh/public" = {
-      sopsFile = ./secrets.yaml;
-      path = "${cfg.home}/.ssh/id_ed25519.pub";
+      path = "${cfg.home}/.config/sops/age/keys.txt";
       owner = cfg.name;
       group = cfg.group;
     };
@@ -48,7 +42,7 @@ in
       "networkmanager"
     ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp"
     ];
     shell = pkgs.fish;
   };
