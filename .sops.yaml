@@ -1,5 +1,5 @@
 keys:
-  - &connor ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2mcsUw0CZ5ktg3c6FG91OGfO8mGCKImZ1aLOmdwl5a
+  - &connor ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp
   - &effigy age1et8v0f2a6y4nvnzcpllr8e5muk9ex7te22ecqm955cukz9vpyeusj9mrm5
   - &opus age1e5z8s7phct8cega2lytgqvm99g7um75tsmxvhz32wk3ptg5gjuqqu5cgk6
   - &cadence age1t9k8pfz8slz878tcrv2v4dmxw8w7wxhcgyg9na82a8vf4qlkpuzqpet3vw
