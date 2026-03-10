@@ -139,8 +139,8 @@ in
           ];
         };
       };
-      plugins = with pkgs.yaziPlugins; {
-        inherit restore mount rich-preview;
+      plugins = {
+        inherit (pkgs.yaziPlugins) restore mount rich-preview;
       };
     };
   };
