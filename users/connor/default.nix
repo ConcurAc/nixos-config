@@ -108,14 +108,6 @@ in
     ''
       <volume
         user="${cfg.name}"
-        mountpoint="${cfg.home}/Media"
-        path="gocryptfs#${cfg.home}/.crypt/media"
-        fstype="fuse"
-      />
-    ''
-    ''
-      <volume
-        user="${cfg.name}"
         mountpoint="${cfg.home}/Games"
         path="mergerfs#${cfg.home}/.games:/srv/users/${cfg.name}/games=RO:/srv/games=RO"
         options="follow-symlinks=directory,category.create=ff"

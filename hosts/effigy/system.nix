@@ -2,7 +2,6 @@
   inputs,
   config,
   lib,
-  pkgs,
   ...
 }:
 {
@@ -23,7 +22,10 @@
         "nvme"
         "sdhci_pci"
       ];
-      kernelModules = [ "dm-snapshot" ];
+
+      kernelModules = [
+        "dm-snapshot"
+      ];
     };
     kernelModules =
       if (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.1") then
@@ -50,6 +52,7 @@
   };
 
   hardware = {
+    enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     bluetooth.enable = true;
     graphics = {
@@ -74,6 +77,8 @@
       };
     };
   };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   powerManagement = {
     enable = true;

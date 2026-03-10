@@ -11,7 +11,10 @@
     ./system.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    cudaSupport = true;
+  };
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
@@ -96,6 +99,17 @@
     };
     "/srv/users" = {
       device = "opus.home.arpa:/users";
+      fsType = "nfs";
+      options = [
+        "timeo=100"
+        "retrans=3"
+        "soft"
+        "nofail"
+        "noatime"
+      ];
+    };
+    "/srv/media" = {
+      device = "opus.home.arpa:/media";
       fsType = "nfs";
       options = [
         "timeo=100"
