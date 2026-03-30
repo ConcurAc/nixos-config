@@ -3,18 +3,16 @@
   config,
   lib,
   pkgs,
-  modulesPath,
   ...
 }:
 {
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ]
-  ++ (with inputs.nixos-hardware.nixosModules; [
+  imports = with inputs.nixos-hardware.nixosModules; [
     common-cpu-amd
     common-pc
     common-pc-ssd
-  ]);
+  ];
+
+  nixpkgs.hostPlatform = "x86_64-linux";
 
   boot = {
     initrd = {
@@ -41,8 +39,12 @@
       "quiet"
       "amd_iommu=on"
       "vfio-pci.ids=03:00.0,03:00.1"
+      "kvmfr.static_size_mb=32"
     ];
     kernelPackages = pkgs.linuxPackages_zen;
+    extraModulePackages = with config.boot.kernelPackages; [
+      kvmfr
+    ];
 
     loader = {
       grub = {
@@ -55,12 +57,8 @@
     tmp.useZram = true;
   };
 
-  nixpkgs = {
-    hostPlatform = lib.mkDefault "x86_64-linux";
-  };
-
   hardware = {
-    enableRedistributableFirmware = true;
+    enableRedistributableFirmware = lib.mkDefault true;
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     bluetooth.enable = true;
     graphics = {

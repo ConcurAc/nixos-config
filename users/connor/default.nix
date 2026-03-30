@@ -7,7 +7,6 @@
 let
   inherit (config.sops) secrets;
   cfg = config.users.users.connor;
-  userKeyFile = "${cfg.home}/.config/sops/age/keys.txt";
 in
 {
   imports =
@@ -49,9 +48,10 @@ in
 
   user-containers.users.connor = {
     enable = true;
-    withMacvlan = true;
+    network = "bridge";
     bindMounts = {
-      ${userKeyFile}.hostPath = config.sops.age.keyFile;
+      ${config.sops.age.keyFile}.hostPath = config.sops.age.keyFile;
+      "/home/data".hostPath = "/srv/users/${cfg.name}";
     };
     config = {
       imports =
@@ -64,7 +64,7 @@ in
           ../../modules/terminal.nix
           ./container
         ];
-      sops.age.keyFile = userKeyFile;
+      sops.age.keyFile = config.sops.age.keyFile;
       stylix = {
         enable = true;
         base16Scheme = "${pkgs.base16-schemes}/share/themes/brewer.yaml";

@@ -33,56 +33,38 @@ in
     recommendedOptimisation = true;
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
+    recommendedGzipSettings = true;
 
     upstreams = {
-      stalwart.servers = builtins.listToAttrs (
-        map (bind: {
-          name = bind;
-          value = { };
-        }) config.services.stalwart-mail.settings.server.listener.http.bind
-      );
+      home-assistant.servers."localhost:${toString config.services.home-assistant.config.http.server_port}" =
+        { };
       vaultwarden.servers."localhost:${toString config.services.vaultwarden.config.ROCKET_PORT}" = { };
       jellyfin.servers."localhost:8096" = { };
       immich.servers."localhost:${toString config.services.immich.port}" = { };
+      immich-kiosk.servers."localhost:${toString config.services.immich-kiosk.settings.kiosk.port}" = { };
+      tandoor.servers."localhost:${toString config.services.tandoor-recipes.port}" = { };
+      ollama.servers."localhost:${toString config.services.ollama.port}" = { };
+      retrom.servers."localhost:${toString config.services.retrom.port}" = { };
     };
 
     virtualHosts = {
-      "scequ.com" = {
+      "home.opus.home.arpa" = {
         addSSL = true;
-        enableACME = true;
-        serverAliases = [
-          "mail.scequ.com"
-          "autoconfig.scequ.com"
-          "autodiscover.scequ.com"
-          "passwords.scequ.com"
-        ];
-      };
-
-      "mail.scequ.com" = {
-        forceSSL = true;
-        useACMEHost = "scequ.com";
-        locations."/".proxyPass = "http://stalwart";
-      };
-
-      "autoconfig.scequ.com" = {
-        forceSSL = true;
-        useACMEHost = "scequ.com";
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
         locations."/" = {
-          proxyPass = "http://stalwart";
+          proxyPass = "http://home-assistant";
+          proxyWebsockets = true;
         };
+        extraConfig = ''
+          proxy_buffering off;
+        '';
       };
 
-      "autodiscover.scequ.com" = {
-        forceSSL = true;
-        useACMEHost = "scequ.com";
-        locations."/" = {
-          proxyPass = "http://stalwart";
-        };
-      };
-
-      "passwords.scequ.com" = {
-        forceSSL = true;
-        useACMEHost = "scequ.com";
+      "passwords.opus.home.arpa" = {
+        addSSL = true;
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
         locations = {
           "/".proxyPass = "http://vaultwarden";
           "= /notifications/anonymous-hub" = {
@@ -96,13 +78,6 @@ in
         };
       };
 
-      "mail.opus.home.arpa" = {
-        addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
-        locations."/".proxyPass = "http://stalwart";
-      };
-
       "media.opus.home.arpa" = {
         addSSL = true;
         sslCertificateKey = secrets."pki/nginx.key".path;
@@ -111,6 +86,9 @@ in
           proxyPass = "http://jellyfin";
           proxyWebsockets = true;
         };
+        extraConfig = ''
+          proxy_buffering off;
+        '';
       };
 
       "photos.opus.home.arpa" = {
@@ -118,7 +96,51 @@ in
         sslCertificateKey = secrets."pki/nginx.key".path;
         sslCertificate = secrets."pki/nginx.crt".path;
         locations."/".proxyPass = "http://immich";
+        extraConfig = ''
+          client_max_body_size 512m;
+        '';
       };
+
+      "kiosk.opus.home.arpa" = {
+        addSSL = true;
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
+        locations."/".proxyPass = "http://immich-kiosk";
+      };
+
+      "recipes.opus.home.arpa" = {
+        addSSL = true;
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
+        locations."/".proxyPass = "http://tandoor";
+      };
+
+      "llm.opus.home.arpa" = {
+        addSSL = true;
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
+        locations."/".proxyPass = "http://ollama";
+        extraConfig = ''
+          proxy_buffering off;
+        '';
+      };
+
+      "games.opus.home.arpa" = {
+        addSSL = true;
+        sslCertificateKey = secrets."pki/nginx.key".path;
+        sslCertificate = secrets."pki/nginx.crt".path;
+        locations."/".proxyPass = "http://retrom";
+      };
+
+      # "comfyui.opus.home.arpa" = {
+      #   addSSL = true;
+      #   sslCertificateKey = secrets."pki/nginx.key".path;
+      #   sslCertificate = secrets."pki/nginx.crt".path;
+      #   locations."/" = {
+      #     proxyPass = "http://localhost:${toString config.impure.comfyui.port}";
+      #   };
+      # };
+
     };
   };
 }

@@ -10,36 +10,14 @@ in
   options.user-containers = with lib; {
     enable = mkEnableOption "Enables container based services.";
     interface = mkOption {
-      type = types.nullOr types.str;
+      type = types.str;
       description = "The physical network interface for the containers.";
     };
-    withGPU = mkOption {
-      type = types.bool;
-      description = "Pass gpu through to container.";
-      default = false;
-    };
+    withGPU = mkEnableOption "Pass gpu through to container.";
     allowedDevices = mkOption {
-      type = types.listOf (
-        types.submodule {
-          options = {
-            node = mkOption {
-              type = types.str;
-              description = "Path to device node.";
-              example = "/dev/net/tun";
-            };
-            modifier = mkOption {
-              type = types.str;
-              description = ''
-                Device node access modifier. Takes a combination `r` (read), `w` (write), and `m` (mknod).
-                See the `systemd.resource-control(5)` man page for more information.
-              '';
-              example = "rw";
-            };
-          };
-        }
-      );
-      description = "List of devices to allow access to container.";
+      type = types.anything;
       default = [ ];
+      description = "List of devices to allow access to container.";
     };
     users = mkOption {
       type = types.attrsOf (
@@ -52,31 +30,22 @@ in
               default = config.user-containers.withGPU;
               defaultText = lib.literalString "config.user-containers.withGPU";
             };
-            withMacvlan = mkOption {
-              type = types.bool;
-              description = "Create macvlans from network interfaces in container";
+            network = mkOption {
+              type = types.enum [
+                "none"
+                "bridge"
+                "macvlan"
+              ];
+              default = "none";
+              description = "The physical network interface for the containers.";
             };
             bindMounts = mkOption {
-              type = types.attrsOf (
-                types.submodule {
-                  options = {
-                    hostPath = mkOption {
-                      type = types.str;
-                    };
-                    isReadOnly = mkOption {
-                      type = types.bool;
-                      default = true;
-                    };
-                  };
-                }
-              );
+              type = types.anything;
               default = { };
               description = "Extra bind mounts for container";
             };
             config = mkOption {
-              type = types.submodule {
-                freeformType = types.attrsOf types.anything;
-              };
+              type = types.anything;
               default = { };
             };
           };
@@ -94,8 +63,11 @@ in
       in
       (lib.mkIf container.enable {
         inherit (cfg) allowedDevices;
+
         autoStart = true;
-        macvlans = lib.mkIf container.withMacvlan [ cfg.interface ];
+        privateNetwork = true;
+
+        macvlans = [ cfg.interface ];
 
         bindMounts = {
           ${cfgUser.hashedPasswordFile}.hostPath = lib.mkIf (
@@ -109,6 +81,10 @@ in
         // container.bindMounts;
 
         config = {
+          system = {
+            inherit (config.system) stateVersion;
+          };
+
           imports = [ container.config ];
 
           users = {
@@ -116,11 +92,11 @@ in
             mutableUsers = false;
           };
 
-          networking.interfaces."mv-${cfg.interface}".useDHCP = lib.mkIf container.withMacvlan (
-            lib.mkDefault true
-          );
-
-          system.stateVersion = config.system.stateVersion;
+          networking.interfaces = {
+            "mv-${cfg.interface}" = {
+              useDHCP = lib.mkDefault true;
+            };
+          };
         };
       })
     ) cfg.users;
