@@ -44,10 +44,13 @@
       retrom,
       ...
     }:
+    let
+      resources = import ./resources;
+    in
     {
       nixosConfigurations = {
         effigy = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs resources; };
           modules = [
             disko.nixosModules.disko
             sops-nix.nixosModules.sops
@@ -69,7 +72,7 @@
         };
 
         opus = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs resources; };
           modules = [
             disko.nixosModules.disko
             sops-nix.nixosModules.sops
