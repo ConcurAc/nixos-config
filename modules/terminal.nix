@@ -6,6 +6,8 @@ let
   };
 in
 {
+  imports = [ ./yazi ];
+
   environment = {
     systemPackages = with pkgs; [
       uutils-coreutils-noprefix
@@ -90,58 +92,6 @@ in
         set fish_greeting ""
       '';
       inherit shellAliases;
-    };
-
-    yazi = {
-      enable = true;
-      settings = {
-        yazi = {
-          mgr.ratio = [
-            2
-            4
-            3
-          ];
-          plugin.prepend_previewers = [
-            {
-              name = "*.md";
-              run = "rich-preview";
-            }
-            {
-              name = "*.csv";
-              run = "rich-preview";
-            }
-            {
-              name = "*.json";
-              run = "rich-preview";
-            }
-            {
-              name = "*.rst";
-              run = "rich-preview";
-            }
-            {
-              name = "*.ipynb";
-              run = "rich-preview";
-            }
-          ];
-        };
-        keymap = {
-          mgr.prepend_keymap = [
-            {
-              on = "M";
-              run = "plugin mount";
-              desc = "mount drives";
-            }
-            {
-              on = "u";
-              run = "plugin restore";
-              desc = "restore last trashed files/folders";
-            }
-          ];
-        };
-      };
-      plugins = {
-        inherit (pkgs.yaziPlugins) restore mount rich-preview;
-      };
     };
   };
 }
