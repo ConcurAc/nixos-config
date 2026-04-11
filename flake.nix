@@ -6,8 +6,8 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager = {
-      url = "github:nix-community/home-manager";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix = {
@@ -18,10 +18,12 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     retrom = {
       url = "github:JMBeresford/retrom";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,7 +39,6 @@
       nixpkgs,
       sops-nix,
       disko,
-      home-manager,
       stylix,
       nixvim,
       nix-minecraft,

@@ -39,16 +39,17 @@ in
     extraGroups = [
       "wheel"
       "networkmanager"
+      "libvirtd"
     ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp"
     ];
     shell = pkgs.fish;
+    packages = [ pkgs.swtpm ];
   };
 
   user-containers.users.connor = {
     enable = true;
-    network = "bridge";
     bindMounts = {
       ${config.sops.age.keyFile}.hostPath = config.sops.age.keyFile;
       "/home/data".hostPath = "/srv/users/${cfg.name}";

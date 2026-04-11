@@ -30,15 +30,6 @@ in
               default = config.user-containers.withGPU;
               defaultText = lib.literalString "config.user-containers.withGPU";
             };
-            network = mkOption {
-              type = types.enum [
-                "none"
-                "bridge"
-                "macvlan"
-              ];
-              default = "none";
-              description = "The physical network interface for the containers.";
-            };
             bindMounts = mkOption {
               type = types.anything;
               default = { };

@@ -1,21 +1,6 @@
 { config, lib, ... }:
-let
-  secrets = config.sops.secrets;
-in
-{
-  sops.secrets = {
-    "pki/nginx.key" = lib.mkIf config.services.nginx.enable {
-      key = "pki/self.key";
-      owner = config.services.nginx.user;
-      group = config.services.nginx.group;
-    };
-    "pki/nginx.crt" = lib.mkIf config.services.nginx.enable {
-      key = "pki/self.crt";
-      owner = config.services.nginx.user;
-      group = config.services.nginx.group;
-    };
-  };
 
+{
   networking.firewall.allowedTCPPorts = [
     80 # http
     443 # https
@@ -24,7 +9,11 @@ in
   security.acme = {
     acceptTerms = true;
     defaults = {
-      email = "connorkouteris@gmail.com";
+      server = "https://ca.home.arpa/acme/acme/directory";
+      email = "acme@scequ.com";
+      validMinDays = 1;
+      renewInterval = "hourly";
+      group = "nginx";
     };
   };
 
@@ -43,15 +32,19 @@ in
       immich.servers."localhost:${toString config.services.immich.port}" = { };
       immich-kiosk.servers."localhost:${toString config.services.immich-kiosk.settings.kiosk.port}" = { };
       tandoor.servers."localhost:${toString config.services.tandoor-recipes.port}" = { };
-      ollama.servers."localhost:${toString config.services.ollama.port}" = { };
+      llama-swap.servers."localhost:${toString config.services.llama-swap.port}" = { };
+      open-webui.servers."localhost:${toString config.services.open-webui.port}" = { };
       retrom.servers."localhost:${toString config.services.retrom.port}" = { };
     };
 
     virtualHosts = {
-      "home.opus.home.arpa" = {
+      "_" = {
+        locations."/".return = "404";
+      };
+
+      "assistant.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://home-assistant";
           proxyWebsockets = true;
@@ -61,27 +54,9 @@ in
         '';
       };
 
-      "passwords.opus.home.arpa" = {
+      "media.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
-        locations = {
-          "/".proxyPass = "http://vaultwarden";
-          "= /notifications/anonymous-hub" = {
-            proxyPass = "http://vaultwarden";
-            proxyWebsockets = true;
-          };
-          "= /notifications/hub" = {
-            proxyPass = "http://vaultwarden";
-            proxyWebsockets = true;
-          };
-        };
-      };
-
-      "media.opus.home.arpa" = {
-        addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://jellyfin";
           proxyWebsockets = true;
@@ -91,45 +66,71 @@ in
         '';
       };
 
-      "photos.opus.home.arpa" = {
+      "photos.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
         locations."/".proxyPass = "http://immich";
         extraConfig = ''
           client_max_body_size 512m;
         '';
       };
 
-      "kiosk.opus.home.arpa" = {
+      "kiosk.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
         locations."/".proxyPass = "http://immich-kiosk";
       };
 
-      "recipes.opus.home.arpa" = {
+      "recipes.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
         locations."/".proxyPass = "http://tandoor";
       };
 
-      "llm.opus.home.arpa" = {
+      "llama.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
-        locations."/".proxyPass = "http://ollama";
+        enableACME = true;
+        locations = {
+          "/" = {
+            proxyPass = "http://llama-swap";
+          };
+          "= /v1" = {
+            proxyPass = "http://llama-swap";
+            proxyWebsockets = true;
+          };
+        };
         extraConfig = ''
           proxy_buffering off;
         '';
       };
 
-      "games.opus.home.arpa" = {
+      "llm.home.arpa" = {
         addSSL = true;
-        sslCertificateKey = secrets."pki/nginx.key".path;
-        sslCertificate = secrets."pki/nginx.crt".path;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://open-webui";
+          proxyWebsockets = true;
+        };
+        extraConfig = ''
+          proxy_buffering off;
+        '';
+      };
+
+      "games.home.arpa" = {
+        addSSL = true;
+        enableACME = true;
         locations."/".proxyPass = "http://retrom";
+      };
+
+      ${config.services.vaultwarden.domain} = {
+        forceSSL = lib.mkForce false; # for acme http-01
+        addSSL = true;
+        enableACME = true;
+      };
+
+      ${config.services.searx.domain} = {
+        addSSL = true;
+        enableACME = true;
       };
 
       # "comfyui.opus.home.arpa" = {

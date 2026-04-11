@@ -62,6 +62,7 @@ in
 
       services = {
         stalwart = {
+          inherit (config.system) stateVersion;
           enable = true;
           openFirewall = true;
           settings = {

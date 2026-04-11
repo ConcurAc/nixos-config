@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   ...
 }:
 let
@@ -47,15 +46,17 @@ in
         acme = {
           acceptTerms = true;
           defaults = {
-            email = "postmaster@scequ.com";
+            email = "acme@scequ.com";
           };
         };
         apparmor.enable = true;
       };
 
-      environment.systemPackages = [ pkgs.inetutils ];
-
       services = {
+        immich-public-proxy = {
+          enable = true;
+          immichUrl = "http://localhost:${toString config.services.immich.port}";
+        };
         nginx = {
           enable = true;
           recommendedOptimisation = true;
@@ -76,7 +77,7 @@ in
               locations."/".return = "404";
             };
             "photos.${fqdn}" = {
-              addSSL = true;
+              forceSSL = true;
               enableACME = true;
               locations."/".proxyPass = "http://immich-public-proxy";
             };
@@ -160,10 +161,6 @@ in
               mode tcp
               server mail.${fqdn} mail.${fqdn}:993 check init-addr last,none resolvers gateway
           '';
-        };
-        immich-public-proxy = {
-          enable = true;
-          immichUrl = "http://localhost:${toString config.services.immich.port}";
         };
       };
     };

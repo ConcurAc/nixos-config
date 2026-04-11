@@ -1,4 +1,5 @@
 {
+  resources,
   config,
   lib,
   pkgs,
@@ -11,9 +12,9 @@ in
   imports = [
     ./system.nix
     ./disks.nix
-    ./local.nix
-    ./proxy.nix
     ./exports.nix
+    ./ca
+    ./proxy
     ./scequ.com
     ../../modules/user-containers.nix
   ];
@@ -43,7 +44,7 @@ in
 
   security = {
     pki.certificates = [
-      (builtins.readFile ./self.crt)
+      (builtins.readFile resources.ca.cert.root)
     ];
     pam.mount = {
       enable = true;
@@ -99,9 +100,16 @@ in
           clr
         ];
       };
+      amdgpuEnv = pkgs.symlinkJoin {
+        name = "amdgpu-combined";
+        paths = with pkgs; [
+          libdrm
+        ];
+      };
     in
     [
       "L+    /opt/rocm   -    -    -     -    ${rocmEnv}"
+      "L+    /opt/amdgpu -    -    -     -    ${amdgpuEnv}"
     ];
 
   environment.systemPackages = with pkgs; [
@@ -137,6 +145,13 @@ in
       dockerCompat = true;
       dockerSocket.enable = true;
       defaultNetwork.settings.dns_enabled = true;
+    };
+    libvirtd = {
+      enable = true;
+      qemu = {
+        swtpm.enable = true;
+        runAsRoot = false;
+      };
     };
   };
 
