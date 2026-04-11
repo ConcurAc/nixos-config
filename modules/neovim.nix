@@ -39,6 +39,7 @@
       lint.enable = true;
       tiny-inline-diagnostic.enable = true;
       conform-nvim.enable = true;
+      hex.enable = true;
       yazi.enable = true;
       cmp.enable = true;
       cmp-fuzzy-buffer.enable = true;
