@@ -5,6 +5,9 @@
   pkgs,
   ...
 }:
+let
+  secrets = config.sops.secrets;
+in
 {
   imports = [
     ./disks.nix
@@ -23,7 +26,11 @@
 
   sops = {
     age.keyFile = "/root/.config/sops/age/keys.txt";
+    defaultSopsFile = ./secrets.yaml;
     secrets = {
+      root-passwd = {
+        neededForUsers = true;
+      };
       home = {
         sopsFile = ./home.conf;
         format = "binary";
@@ -34,6 +41,8 @@
       };
     };
   };
+
+  users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
   boot.plymouth.enable = true;
 
