@@ -25,7 +25,7 @@
     };
 
     retrom = {
-      url = "github:JMBeresford/retrom";
+      url = "github:JMBeresford/retrom/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-minecraft = {
