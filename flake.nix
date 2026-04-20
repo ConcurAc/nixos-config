@@ -18,12 +18,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     retrom = {
       url = "github:JMBeresford/retrom/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,8 +56,6 @@
 
             stylix.nixosModules.stylix
             nixvim.nixosModules.nixvim
-
-            retrom.nixosModules.retrom
 
             ./hosts/effigy
             ./configuration.nix
