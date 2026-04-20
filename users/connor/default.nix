@@ -74,20 +74,4 @@ in
   };
 
   programs.fuse.userAllowOther = true;
-
-  security.pam.mount.extraVolumes = [
-    # CAN SOMEONE ACCEPT MY PR SO I CAN GET RID OF THIS
-    # https://github.com/NixOS/nixpkgs/pull/453507
-    "<path>/run/wrappers/bin:${pkgs.util-linux}/bin:${pkgs.gocryptfs}/bin:${pkgs.mergerfs}/bin</path>"
-    ''
-      <volume
-        user="${cfg.name}"
-        mountpoint="${cfg.home}/Games"
-        path="mergerfs#${cfg.home}/.games:/srv/users/${cfg.name}/games=RO:/srv/games=RO"
-        options="follow-symlinks=directory,category.create=ff"
-        fstype="fuse"
-        noroot="0"
-      />
-    ''
-  ];
 }
