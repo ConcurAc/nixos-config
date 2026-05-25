@@ -44,7 +44,7 @@ in
         defaultSopsFile = ./secrets.yaml;
         age.keyFile = config.sops.age.keyFile;
         secrets = {
-          "stalwart/admin_secret" = lib.mkIf cfg.services.stalwart.enable {
+          "stalwart/admin/secret" = lib.mkIf cfg.services.stalwart.enable {
             owner = cfg.services.stalwart.user;
             group = cfg.services.stalwart.group;
           };
@@ -117,7 +117,19 @@ in
 
             authentication.fallback-admin = {
               user = "admin";
-              secret = "%{file:${secrets."stalwart/admin_secret".path}}%";
+              secret = "%{file:${secrets."stalwart/admin/secret".path}}%";
+            };
+
+            acme."letsencrypt.scequ.com" = {
+              directory = "https://acme-v02.api.letsencrypt.org/directory";
+              challenge = "tls-alpn-01";
+              contact = "acme@scequ.com";
+              domains = [
+                "mail.scequ.com"
+                "autoconfig.scequ.com"
+                "autodiscover.scequ.com"
+                "mta-sts.scequ.com"
+              ];
             };
           };
         };
