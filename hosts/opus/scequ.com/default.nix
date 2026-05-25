@@ -112,6 +112,7 @@ in
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i mail.${fqdn} }
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i autoconfig.${fqdn} }
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i autodiscover.${fqdn} }
+              use_backend mail.${fqdn}_ssl if { req_ssl_sni -i mta-sts.${fqdn} }
 
               default_backend nginx_ssl
 
