@@ -87,14 +87,19 @@ in
           enable = true;
           config = ''
             defaults
+              log     global
+              option  tcplog
+              option  dontlognull
               timeout connect 5s
               timeout client  50s
               timeout server  50s
 
+            resolvers gateway
+              nameserver dns 192.168.1.1:53
+
             frontend forward_http
               bind :80
               mode http
-
               default_backend nginx_http
 
             backend nginx_http
@@ -107,24 +112,20 @@ in
               option tcplog
               tcp-request inspect-delay 5s
               tcp-request content accept if { req_ssl_hello_type 1 }
-
               use_backend mail.${fqdn}_ssl if { req.ssl_alpn acme-tls/1 }
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i mail.${fqdn} }
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i autoconfig.${fqdn} }
               use_backend mail.${fqdn}_ssl if { req_ssl_sni -i autodiscover.${fqdn} }
-
+              use_backend mail.${fqdn}_ssl if { req_ssl_sni -i mta-sts.${fqdn} }
               default_backend nginx_ssl
 
             backend nginx_ssl
               mode tcp
               server nginx localhost:8443 check
 
-            resolvers gateway
-              nameserver dns 192.168.1.1:53
-
             backend mail.${fqdn}_ssl
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:443 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:443 send-proxy-v2 check init-addr last,none resolvers gateway
 
             frontend forward_smtp
               bind :25
@@ -135,7 +136,7 @@ in
 
             backend mail.${fqdn}_smtp
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:25 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:25 send-proxy-v2 check init-addr last,none resolvers gateway
 
             frontend forward_submissions
               bind :465
@@ -147,7 +148,7 @@ in
 
             backend mail.${fqdn}_submissions
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:465 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:465 send-proxy-v2 check init-addr last,none resolvers gateway
 
             frontend forward_imaps
               bind :993
@@ -159,7 +160,7 @@ in
 
             backend mail.${fqdn}_imaps
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:993 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:993 send-proxy-v2 check init-addr last,none resolvers gateway
           '';
         };
       };

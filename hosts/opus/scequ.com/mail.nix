@@ -68,6 +68,7 @@ in
           settings = {
             server = {
               hostname = fqdn;
+              proxy.trusted-networks = [ "172.16.10.10/32" ];
               listener = {
                 smtp = {
                   bind = "[::]:25";
