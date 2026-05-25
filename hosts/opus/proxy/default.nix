@@ -59,7 +59,6 @@ in
     config = {
       imports = [
         inputs.sops-nix.nixosModules.sops
-        inputs.hermes-agent.nixosModules.default
         inputs.retrom.nixosModules.retrom
 
         ./proxy.nix

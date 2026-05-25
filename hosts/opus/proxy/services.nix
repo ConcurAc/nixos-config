@@ -256,26 +256,6 @@ in
         rpc-ssl-certificate=${secrets."pki/monero.crt".path}
       '';
     };
-
-    hermes-agent = {
-      enable = true;
-      settings = {
-        model = {
-          default = "gemma-4-e4b-uncensored";
-          base_url = "https://llama.home.arpa/v1";
-        };
-        display = {
-          compact = true;
-          personality = "kawaii";
-        };
-        memory = {
-          memory_enabled = true;
-          user_profile_enabled = true;
-        };
-      };
-      addToSystemPackages = true;
-    };
-
     retrom = {
       enable = true;
       enableDatabase = true;

@@ -30,6 +30,10 @@
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-citizen = {
+      url = "github:LovingMelody/nix-citizen";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -40,6 +44,7 @@
       stylix,
       nixvim,
       nix-minecraft,
+      nix-citizen,
       retrom,
       ...
     }:
@@ -78,6 +83,7 @@
             nixvim.nixosModules.nixvim
 
             nix-minecraft.nixosModules.minecraft-servers
+            nix-citizen.nixosModules.default
             retrom.nixosModules.retrom
 
             ./hosts/opus

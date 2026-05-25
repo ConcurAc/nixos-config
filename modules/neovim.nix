@@ -43,7 +43,6 @@
       yazi.enable = true;
       cmp.enable = true;
       cmp-fuzzy-buffer.enable = true;
-      cmp-fuzzy-path.enable = true;
       cmp-nvim-lsp.enable = true;
 
       cmp-treesitter.enable = true;
