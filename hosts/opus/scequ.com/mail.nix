@@ -93,15 +93,15 @@ in
             };
 
             storage = {
-              data = "rocksdb";
-              fts = "rocksdb";
-              blob = "rocksdb";
-              lookup = "rocksdb";
+              data = "db";
+              fts = "db";
+              blob = "db";
+              lookup = "db";
               directory = "internal";
             };
 
             store = {
-              rocksdb = {
+              db = {
                 type = "rocksdb";
                 path = "${cfg.services.stalwart.dataDir}/data";
                 compression = "lz4";
@@ -111,7 +111,7 @@ in
             directory = {
               internal = {
                 type = "internal";
-                store = "rocksdb";
+                store = "db";
               };
             };
 
