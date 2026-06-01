@@ -1,0 +1,21 @@
+system: "base16"
+name: "Hephae"
+author: "Connor Davis"
+variant: "soft"
+palette:
+  base00: "#2c1818" # base
+  base01: "#2d2929" # mantle
+  base02: "#4a3e3e" # surface 1
+  base03: "#887c7c" # surface 2
+  base04: "#b9c1d2" # surface 3
+  base05: "#d6f1e6" # text
+  base06: "#b1f49c" # highlight
+  base07: "#a8aad8" # accent
+  base08: "#ff7b9a" # red
+  base09: "#e39974" # orange
+  base0A: "#f2e28f" # yellow
+  base0B: "#b8cf88" # green
+  base0C: "#90ebc5" # cyan
+  base0D: "#83b5d2" # blue
+  base0E: "#f17ac9" # magenta
+  base0F: "#f2f9fd" # special
