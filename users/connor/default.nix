@@ -1,41 +1,26 @@
 {
   inputs,
+  modules,
   config,
   pkgs,
   ...
 }:
 let
-  inherit (config.sops) secrets;
   cfg = config.users.users.connor;
+  secret = secret: config.sops.secrets."users/connor/${secret}".path;
 in
 {
-  imports =
-    with inputs;
-    [
-      sops-nix.nixosModules.sops
-    ]
-    ++ [
-      ../../modules/user-containers.nix
-    ];
-
-  sops.secrets = {
-    "connor/passwd" = {
-      sopsFile = ./secrets.yaml;
-      neededForUsers = true;
-    };
-    "connor/age" = {
-      sopsFile = ./secrets.yaml;
-      path = "${cfg.home}/.config/sops/age/keys.txt";
-      owner = cfg.name;
-      group = cfg.group;
-    };
-  };
+  imports = with modules; [
+    secrets
+    features
+    user-containers
+  ];
 
   users.users.connor = {
     isNormalUser = true;
     uid = 1000;
     home = "/home/connor";
-    hashedPasswordFile = secrets."connor/passwd".path;
+    hashedPasswordFile = secret "passwd";
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -45,7 +30,20 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp"
     ];
     shell = pkgs.fish;
-    packages = [ pkgs.swtpm ];
+  };
+
+  features = {
+    development = {
+      enable = lib.mkDefault true;
+    };
+    gaming = {
+      enable = lib.mkDefault true;
+    };
+  };
+
+  programs = {
+    niri.enable = true;
+    xwayland.enable = true;
   };
 
   user-containers.users.connor = {
@@ -72,6 +70,4 @@ in
       };
     };
   };
-
-  programs.fuse.userAllowOther = true;
 }
