@@ -18,8 +18,12 @@ in
 {
   options.setup.login = {
     enable = lib.mkEnableOption "login customisation";
-    time = lib.mkEnableOption "show clock in tuigreet";
-    remember = lib.mkEnableOption "remember last selected session";
+    time = lib.mkEnableOption "show clock" // {
+      default = true;
+    };
+    remember = lib.mkEnableOption "remember last selected session" // {
+      default = true;
+    };
   };
 
   config = lib.mkIf cfg.enable {
