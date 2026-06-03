@@ -21,6 +21,7 @@
   fileSystems = {
     "/var/lib/immich" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=share/@immich"
@@ -31,6 +32,7 @@
     };
     "/srv/ai" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@ai"
@@ -42,6 +44,7 @@
 
     "/srv/library" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "none";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@library"
@@ -52,6 +55,7 @@
     };
     "/exports/library" = {
       device = "/srv/library";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
@@ -59,6 +63,7 @@
     };
     "/srv/users" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@users"
@@ -69,6 +74,7 @@
     };
     "/exports/users" = {
       device = "/srv/users";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
@@ -76,6 +82,7 @@
     };
     "/srv/media" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@media"
@@ -86,6 +93,7 @@
     };
     "/exports/media" = {
       device = "/srv/media";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
@@ -93,6 +101,7 @@
     };
     "/srv/gallery" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@gallery"
@@ -103,6 +112,7 @@
     };
     "/srv/archives" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@archives"
@@ -113,6 +123,7 @@
     };
     "/exports/archives" = {
       device = "/srv/archives";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
@@ -120,6 +131,7 @@
     };
     "/srv/crypto" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@crypto"
@@ -130,6 +142,7 @@
     };
     "/srv/games" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@games"
@@ -140,6 +153,7 @@
     };
     "/exports/games" = {
       device = "/srv/games";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
@@ -147,6 +161,7 @@
     };
     "/srv/steam" = {
       device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
       options = [
         "x-systemd.mount-timeout=25s"
         "subvol=@steam"
@@ -157,6 +172,7 @@
     };
     "/exports/steam" = {
       device = "/srv/steam";
+      fsType = "none";
       options = [
         "bind"
         "nofail"
