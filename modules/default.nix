@@ -1,6 +1,5 @@
 {
   defaults = ./defaults;
-  secrets = ./secrets;
 
   setup = ./setup;
   features = ./features;

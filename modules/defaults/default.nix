@@ -12,8 +12,6 @@
     ./bash.nix
     ./fish.nix
     ./yazi.nix
-
-    ./gaming.nix
   ];
 
   time.timeZone = lib.mkDefault "Australia/Melbourne";
