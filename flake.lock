@@ -336,14 +336,13 @@
         "type": "github"
       }
     },
-    "nix-citizen": {
+    "nix-minecraft": {
       "inputs": {
         "flake-compat": "flake-compat_3",
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": "systems",
-        "treefmt-nix": "treefmt-nix"
+        "systems": "systems"
       },
       "locked": {
         "lastModified": 1780375694,
