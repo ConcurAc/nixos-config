@@ -225,37 +225,6 @@ in
       enable = true;
       port = 8060;
     };
-    monero = {
-      enable = true;
-      prune = true;
-
-      environmentFile = secrets."monero.env".path;
-      dataDir = "/srv/crypto/monero";
-      rpc = {
-        user = "$MONERO_USER";
-        password = "$MONERO_PASSWORD";
-        address = "127.0.0.1";
-      };
-      priorityNodes = [
-        "p2pmd.xmrvsbeast.com:18080"
-        "nodes.hashvault.pro:18080"
-      ];
-      extraConfig = ''
-        zmq-pub=tcp://0.0.0.0:18083
-
-        # peers
-        out-peers=32
-        in-peers=64
-
-        # dns
-        enforce-dns-checkpointing=1
-        enable-dns-blocklist=1
-
-        # ssl
-        rpc-ssl-private-key=${secrets."pki/monero.key".path}
-        rpc-ssl-certificate=${secrets."pki/monero.crt".path}
-      '';
-    };
     retrom = {
       enable = true;
       enableDatabase = true;
