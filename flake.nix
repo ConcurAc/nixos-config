@@ -14,14 +14,6 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hermes-agent = {
-      url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     retrom = {
       url = "github:JMBeresford/retrom/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,99 +31,51 @@
   outputs =
     inputs@{
       nixpkgs,
-      sops-nix,
-      disko,
-      stylix,
-      nixvim,
-      nix-minecraft,
-      nix-citizen,
-      retrom,
       ...
     }:
     let
-      resources = import ./resources;
+      lib = nixpkgs.lib;
+      users = import ./users;
+      specialArgs = {
+        inherit inputs;
+        modules = import ./modules;
+        resources = import ./resources;
+      };
     in
     {
       nixosConfigurations = {
         effigy = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs resources; };
+          inherit specialArgs;
           modules = [
-            disko.nixosModules.disko
-            sops-nix.nixosModules.sops
-
-            stylix.nixosModules.stylix
-            nixvim.nixosModules.nixvim
-
             ./hosts/effigy
-            ./configuration.nix
-            ./modules/terminal.nix
-            ./modules/neovim.nix
 
-            ./modules/desktop/niri.nix
-
-            ./users/connor
+            users.connor
           ];
         };
 
         opus = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs resources; };
+          inherit specialArgs;
           modules = [
-            disko.nixosModules.disko
-            sops-nix.nixosModules.sops
-
-            stylix.nixosModules.stylix
-            nixvim.nixosModules.nixvim
-
-            nix-minecraft.nixosModules.minecraft-servers
-            nix-citizen.nixosModules.default
-            retrom.nixosModules.retrom
-
             ./hosts/opus
-            ./configuration.nix
-            ./modules/terminal.nix
-            ./modules/neovim.nix
-
-            ./modules/desktop/niri.nix
-
-            ./users/connor
-            ./users/kendrick
-            ./users/liam
-          ];
+          ]
+          ++ lib.attrsToList users;
         };
 
         cadence = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          inherit specialArgs;
           modules = [
-            disko.nixosModules.disko
-            sops-nix.nixosModules.sops
-
-            nixvim.nixosModules.nixvim
-            stylix.nixosModules.stylix
-
             ./hosts/cadence
-            ./configuration.nix
-            ./modules/terminal.nix
-            ./modules/neovim.nix
 
-            ./users/connor
+            users.connor
           ];
         };
 
         insomnia = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          inherit specialArgs;
           modules = [
-            disko.nixosModules.disko
-            sops-nix.nixosModules.sops
-
-            stylix.nixosModules.stylix
-            nixvim.nixosModules.nixvim
-
             ./hosts/insomnia
-            ./configuration.nix
-            ./modules/terminal.nix
-            ./modules/neovim.nix
 
-            ./users/connor
+            users.connor
           ];
         };
       };

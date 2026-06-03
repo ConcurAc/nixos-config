@@ -10,7 +10,7 @@ in
 {
   options.features.development = {
     enable = lib.mkEnableOption "Enable development features";
-    nix = lib.mkEnableOption "Enable development features";
+    nix = lib.mkEnableOption "Enable nix tools";
   };
 
   config = lib.mkIf cfg.enable {

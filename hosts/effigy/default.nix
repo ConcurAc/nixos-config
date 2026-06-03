@@ -1,68 +1,94 @@
 {
   resources,
+  modules,
   config,
-  lib,
-  pkgs,
   ...
 }:
 let
-  secrets = config.sops.secrets;
+  secret = secret: config.sops.secrets."hosts/effigy/${secret}".path;
 in
 {
-  imports = [
+  imports = with modules; [
+    defaults
+    secrets
+    setup
+
     ./disks.nix
     ./system.nix
   ];
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    cudaSupport = true;
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
-  nix.settings = {
-    substituters = [ "https://cache.nixos-cuda.org" ];
-    trusted-public-keys = [ "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=" ];
-  };
+  nixpkgs.config.allowUnfree = true;
 
-  sops = {
-    age.keyFile = "/root/.config/sops/age/keys.txt";
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      root-passwd = {
-        neededForUsers = true;
-      };
-      home = {
-        sopsFile = ./home.conf;
-        format = "binary";
-      };
-      proxy = {
-        sopsFile = ./proxy.conf;
-        format = "binary";
-      };
+  sops.age.keyFile = "/root/.config/sops/age/keys.txt";
+
+  setup = {
+    terminal.enable = true;
+    login.enable = true;
+    desktop = {
+      enable = true;
+      polkit = true;
+      printing = true;
+    };
+    fonts = {
+      enable = true;
+      emoji = true;
+      cjk = true;
+      lgc = true;
     };
   };
-
-  users.users.root.hashedPasswordFile = secrets.root-passwd.path;
-
-  boot.plymouth.enable = true;
 
   security = {
+    sudo-rs.enable = true;
     pki.certificates = [
-      (builtins.readFile resources.ca.cert.root)
+      (builtins.readFile resources.ca.root)
     ];
-    pam.mount = {
+  };
+
+  users.users.root.hashedPasswordFile = secret "passwd";
+
+  networking = {
+    hostName = "effigy";
+    wg-quick.interfaces = {
+      home = {
+        autostart = false;
+        configFile = secret "wg-home";
+      };
+      proxy = {
+        autostart = false;
+        configFile = secret "wg-proxy";
+      };
+    };
+    networkmanager = {
       enable = true;
-      createMountPoints = true;
-      fuseMountOptions = [
-        "nodev"
-        "nosuid"
-      ];
-      additionalSearchPaths = with pkgs; [
-        gocryptfs
-        mergerfs
-      ];
+      wifi = {
+        backend = "iwd";
+        powersave = true;
+      };
     };
   };
+
+  programs = {
+    nix-ld.enable = true;
+  };
+
+  services = {
+    openssh.enable = true;
+    power-profiles-daemon.enable = true;
+  };
+
+  stylix.enable = true;
 
   fileSystems = {
     "/srv/library" = {
@@ -133,86 +159,5 @@ in
     };
   };
 
-  networking = {
-    hostName = "effigy";
-    useDHCP = lib.mkDefault true;
-    networkmanager = {
-      enable = true;
-      wifi = {
-        backend = "iwd";
-        powersave = true;
-      };
-    };
-    wg-quick.interfaces = {
-      home = {
-        autostart = false;
-        configFile = config.sops.secrets.home.path;
-      };
-      proxy = {
-        autostart = false;
-        configFile = config.sops.secrets.proxy.path;
-      };
-    };
-  };
-
-  programs = {
-    gnupg.agent.enable = true;
-    nix-ld.enable = true;
-    gamemode.enable = true;
-    steam = {
-      enable = true;
-      extraCompatPackages = with pkgs; [
-        proton-ge-bin
-      ];
-    };
-  };
-
-  services = {
-    xserver.videoDrivers = [
-      "nvidia"
-      "intel"
-    ];
-    udisks2.enable = true;
-    upower.enable = true;
-    pipewire = {
-      enable = true;
-      jack.enable = true;
-    };
-    greetd = {
-      enable = true;
-      useTextGreeter = true;
-      greeterManagesPlymouth = true;
-      settings = {
-        default_session = {
-          command = lib.getExe pkgs.tuigreet;
-        };
-      };
-    };
-    gvfs.enable = true;
-    power-profiles-daemon.enable = true;
-    clamav = {
-      daemon.enable = true;
-      scanner.enable = true;
-      updater.enable = true;
-    };
-  };
-
-  environment.systemPackages = with pkgs; [
-    waypipe
-  ];
-
-  fonts = {
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      noto-fonts-color-emoji
-    ];
-    enableDefaultPackages = true;
-  };
-
-  stylix = {
-    enable = true;
-    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-  };
+  system.stateVersion = "25.05";
 }
