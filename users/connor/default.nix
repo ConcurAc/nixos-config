@@ -2,29 +2,32 @@
   inputs,
   modules,
   config,
+  lib,
   pkgs,
   ...
 }:
 let
   cfg = config.users.users.connor;
-  secret = secret: config.sops.secrets."users/connor/${secret}".path;
+  secrets = import ./secrets;
 in
 {
   imports = with modules; [
-    secrets
     features
     user-containers
+
+    secrets.mod
   ];
 
   users.users.connor = {
     isNormalUser = true;
     uid = 1000;
     home = "/home/connor";
-    hashedPasswordFile = secret "passwd";
+    hashedPasswordFile = secrets.get config "passwd";
     extraGroups = [
       "wheel"
       "networkmanager"
       "libvirtd"
+      "wireshark"
     ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp"

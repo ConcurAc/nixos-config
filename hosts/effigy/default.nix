@@ -5,14 +5,14 @@
   ...
 }:
 let
-  secret = secret: config.sops.secrets."hosts/effigy/${secret}".path;
+  secrets = import ./secrets;
 in
 {
   imports = with modules; [
     defaults
-    secrets
     setup
 
+    secrets.mod
     ./disks.nix
     ./system.nix
   ];
@@ -34,6 +34,7 @@ in
   sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   setup = {
+    secrets.enable = true;
     terminal.enable = true;
     login.enable = true;
     desktop = {
@@ -56,18 +57,18 @@ in
     ];
   };
 
-  users.users.root.hashedPasswordFile = secret "passwd";
+  users.users.root.hashedPasswordFile = secrets.get config "passwd";
 
   networking = {
     hostName = "effigy";
     wg-quick.interfaces = {
       home = {
         autostart = false;
-        configFile = secret "wg-home";
+        configFile = secrets.get config "wg-home";
       };
       proxy = {
         autostart = false;
-        configFile = secret "wg-proxy";
+        configFile = secrets.get config "wg-proxy";
       };
     };
     networkmanager = {
