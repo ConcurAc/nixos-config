@@ -1,6 +1,6 @@
 {
   inputs,
-  resources,
+  assets,
   config,
   ...
 }:
@@ -31,11 +31,12 @@ in
     config = {
       imports = [
         inputs.sops-nix.nixosModules.sops
+
         ./configuration.nix
       ];
 
       _module.args = {
-        inherit resources;
+        inherit assets;
       };
 
       sops = {

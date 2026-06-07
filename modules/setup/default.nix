@@ -5,6 +5,5 @@
     ./services.nix
     ./fonts.nix
     ./desktop.nix
-    ./secrets.nix
   ];
 }

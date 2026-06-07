@@ -69,4 +69,26 @@
   };
 
   zramSwap.enable = true;
+
+  systemd.tmpfiles.rules =
+    let
+      rocmEnv = pkgs.symlinkJoin {
+        name = "rocm-combined";
+        paths = with pkgs.rocmPackages; [
+          rocblas
+          hipblas
+          clr
+        ];
+      };
+      amdgpuEnv = pkgs.symlinkJoin {
+        name = "amdgpu-combined";
+        paths = with pkgs; [
+          libdrm
+        ];
+      };
+    in
+    [
+      "L+    /opt/rocm   -    -    -     -    ${rocmEnv}"
+      "L+    /opt/amdgpu -    -    -     -    ${amdgpuEnv}"
+    ];
 }

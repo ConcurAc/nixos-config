@@ -31,15 +31,17 @@
   outputs =
     inputs@{
       nixpkgs,
+      sops-nix,
+      disko,
+      stylix,
       ...
     }:
     let
-      lib = nixpkgs.lib;
       users = import ./users;
       specialArgs = {
         inherit inputs;
         modules = import ./modules;
-        resources = import ./resources;
+        assets = import ./assets;
       };
     in
     {
@@ -47,6 +49,10 @@
         effigy = nixpkgs.lib.nixosSystem {
           inherit specialArgs;
           modules = [
+            sops-nix.nixosModules.sops
+            disko.nixosModules.disko
+            stylix.nixosModules.stylix
+
             ./hosts/effigy
 
             users.connor
@@ -56,14 +62,24 @@
         opus = nixpkgs.lib.nixosSystem {
           inherit specialArgs;
           modules = [
+            sops-nix.nixosModules.sops
+            disko.nixosModules.disko
+            stylix.nixosModules.stylix
+
             ./hosts/opus
-          ]
-          ++ lib.attrsToList users;
+
+            users.connor
+            users.liam
+          ];
         };
 
         cadence = nixpkgs.lib.nixosSystem {
           inherit specialArgs;
           modules = [
+            sops-nix.nixosModules.sops
+            disko.nixosModules.disko
+            stylix.nixosModules.stylix
+
             ./hosts/cadence
 
             users.connor
@@ -73,6 +89,9 @@
         insomnia = nixpkgs.lib.nixosSystem {
           inherit specialArgs;
           modules = [
+            sops-nix.nixosModules.sops
+            disko.nixosModules.disko
+
             ./hosts/insomnia
 
             users.connor

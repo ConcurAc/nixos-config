@@ -8,21 +8,21 @@
 }:
 let
   cfg = config.users.users.connor;
-  secrets = import ./secrets;
+  secrets = config.sops.secrets;
 in
 {
   imports = with modules; [
     features
     user-containers
 
-    secrets.mod
+    ./secrets
   ];
 
   users.users.connor = {
     isNormalUser = true;
     uid = 1000;
     home = "/home/connor";
-    hashedPasswordFile = secrets.get config "passwd";
+    hashedPasswordFile = secrets."connor/passwd".path;
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -50,22 +50,18 @@ in
   };
 
   user-containers.users.connor = {
-    enable = true;
+    enable = false;
     bindMounts = {
       ${config.sops.age.keyFile}.hostPath = config.sops.age.keyFile;
       "/home/data".hostPath = "/srv/users/${cfg.name}";
     };
     config = {
-      imports =
-        with inputs;
-        [
-          sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
-        ]
-        ++ [
-          ../../modules/terminal.nix
-          ./container
-        ];
+      imports = with inputs; [
+        sops-nix.nixosModules.sops
+        stylix.nixosModules.stylix
+
+        ./container
+      ];
       sops.age.keyFile = config.sops.age.keyFile;
       stylix = {
         enable = true;

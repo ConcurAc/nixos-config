@@ -1,18 +1,9 @@
-{ resources, config, ... }:
+{ assets, config, ... }:
 let
   secrets = config.sops.secrets;
 in
 {
-  sops.secrets = {
-    "step-ca/passwd" = {
-      owner = config.systemd.services.step-ca.serviceConfig.User;
-      group = config.systemd.services.step-ca.serviceConfig.Group;
-    };
-    "step-ca/secrets/intermediate_ca_key" = {
-      owner = config.systemd.services.step-ca.serviceConfig.User;
-      group = config.systemd.services.step-ca.serviceConfig.Group;
-    };
-  };
+  imports = [ ./secrets ];
 
   security = {
     apparmor.enable = true;
@@ -26,8 +17,8 @@ in
       openFirewall = true;
       intermediatePasswordFile = secrets."step-ca/passwd".path;
       settings = {
-        root = resources.ca.cert.root;
-        crt = resources.ca.cert.intermediate;
+        root = assets.ca.root;
+        crt = assets.ca.intermediate;
         key = secrets."step-ca/secrets/intermediate_ca_key".path;
         address = ":443";
         dnsNames = [ "ca.home.arpa" ];

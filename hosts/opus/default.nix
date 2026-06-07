@@ -1,8 +1,7 @@
 {
-  resources,
-  inputs,
+  assets,
+  modules,
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -10,60 +9,66 @@ let
   secrets = config.sops.secrets;
 in
 {
-  imports = [
+  imports = with modules; [
+    defaults
+    setup
+    features
+
+    ./secrets
     ./system.nix
     ./disks.nix
     ./exports.nix
     ./ca
-    ./proxy
+    ./services
     ./scequ.com
     ../../modules/user-containers.nix
   ];
+
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   nixpkgs.config = {
     allowUnfree = true;
     rocmSupport = true;
   };
 
-  sops = {
-    age.keyFile = "/root/.config/sops/age/keys.txt";
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      root-passwd = {
-        neededForUsers = true;
-      };
+  sops.age.keyFile = "/root/.config/sops/age/keys.txt";
+
+  setup = {
+    terminal.enable = true;
+    desktop = {
+      enable = true;
+      polkit = true;
+    };
+    fonts = {
+      enable = true;
+      emoji = true;
+      cjk = true;
+      lgc = true;
     };
   };
-
-  users.users.root.hashedPasswordFile = secrets.root-passwd.path;
 
   boot.plymouth.enable = true;
 
-  hardware = {
-    steam-hardware.enable = true;
-  };
+  users.users.root.hashedPasswordFile = secrets."passwd".path;
 
   security = {
     pki.certificates = [
-      (builtins.readFile resources.ca.cert.root)
+      (builtins.readFile assets.ca.root)
     ];
-    pam.mount = {
-      enable = true;
-      createMountPoints = true;
-      fuseMountOptions = [
-        "nodev"
-        "nosuid"
-      ];
-      additionalSearchPaths = with pkgs; [
-        gocryptfs
-        mergerfs
-      ];
-    };
   };
 
   networking = {
     hostName = "opus";
-    useDHCP = lib.mkDefault true;
     vlans = {
       vlan100 = {
         id = 100;
@@ -91,28 +96,6 @@ in
     };
   };
 
-  systemd.tmpfiles.rules =
-    let
-      rocmEnv = pkgs.symlinkJoin {
-        name = "rocm-combined";
-        paths = with pkgs.rocmPackages; [
-          rocblas
-          hipblas
-          clr
-        ];
-      };
-      amdgpuEnv = pkgs.symlinkJoin {
-        name = "amdgpu-combined";
-        paths = with pkgs; [
-          libdrm
-        ];
-      };
-    in
-    [
-      "L+    /opt/rocm   -    -    -     -    ${rocmEnv}"
-      "L+    /opt/amdgpu -    -    -     -    ${amdgpuEnv}"
-    ];
-
   environment = {
     systemPackages = with pkgs; [
       waypipe
@@ -122,24 +105,16 @@ in
 
   programs = {
     nix-ld.enable = true;
-    steam.enable = true;
-    gamemode.enable = true;
   };
 
   services = {
-    desktopManager = {
-      cosmic = {
-        enable = true;
-        xwayland.enable = true;
-      };
-    };
+    # desktopManager = {
+    #   cosmic = {
+    #     enable = true;
+    #     xwayland.enable = true;
+    #   };
+    # };
     displayManager.cosmic-greeter.enable = true;
-    gvfs.enable = true;
-    udisks2.enable = true;
-    pipewire = {
-      enable = true;
-      pulse.enable = true;
-    };
   };
 
   virtualisation = {
@@ -160,7 +135,7 @@ in
 
   stylix = {
     enable = true;
-    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/hopscotch.yaml";
+    base16Scheme = assets.palette.hephae-soft;
   };
 
   user-containers = {
@@ -178,4 +153,6 @@ in
       }
     ];
   };
+
+  system.stateVersion = "25.05";
 }

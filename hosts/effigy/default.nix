@@ -1,18 +1,18 @@
 {
-  resources,
+  assets,
   modules,
   config,
   ...
 }:
 let
-  secrets = import ./secrets;
+  secrets = config.sops.secrets;
 in
 {
   imports = with modules; [
     defaults
     setup
 
-    secrets.mod
+    ./secrets
     ./disks.nix
     ./system.nix
   ];
@@ -34,7 +34,6 @@ in
   sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   setup = {
-    secrets.enable = true;
     terminal.enable = true;
     login.enable = true;
     desktop = {
@@ -53,22 +52,22 @@ in
   security = {
     sudo-rs.enable = true;
     pki.certificates = [
-      (builtins.readFile resources.ca.root)
+      (builtins.readFile assets.ca.root)
     ];
   };
 
-  users.users.root.hashedPasswordFile = secrets.get config "passwd";
+  users.users.root.hashedPasswordFile = secrets."passwd".path;
 
   networking = {
     hostName = "effigy";
     wg-quick.interfaces = {
       home = {
         autostart = false;
-        configFile = secrets.get config "wg-home";
+        configFile = secrets."wg-home".path;
       };
       proxy = {
         autostart = false;
-        configFile = secrets.get config "wg-proxy";
+        configFile = secrets."wg-proxy".path;
       };
     };
     networkmanager = {
@@ -89,7 +88,10 @@ in
     power-profiles-daemon.enable = true;
   };
 
-  stylix.enable = true;
+  stylix = {
+    enable = true;
+    base16Scheme = assets.palette.hephae-soft;
+  };
 
   fileSystems = {
     "/srv/library" = {
