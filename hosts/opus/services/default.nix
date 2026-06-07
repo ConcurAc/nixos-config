@@ -1,6 +1,6 @@
 {
+  assets,
   inputs,
-  resources,
   config,
   lib,
   ...
@@ -18,7 +18,6 @@ in
   containers.${hostName} = {
     autoStart = true;
 
-    # privateUsers = "pick";
     privateNetwork = true;
 
     macvlans = [ interface ];
@@ -57,12 +56,22 @@ in
     ];
 
     config = {
-      imports = [
-        inputs.sops-nix.nixosModules.sops
-        inputs.retrom.nixosModules.retrom
+      imports = with inputs; [
+        sops-nix.nixosModules.sops
+        retrom.nixosModules.retrom
 
-        ./proxy.nix
-        ./services.nix
+        ./passwords.nix
+
+        ./search.nix
+        ./llama.nix
+        ./llm.nix
+
+        ./media.nix
+
+        ./photos.nix
+        ./kiosk.nix
+
+        ./recipes.nix
       ];
 
       nixpkgs.config = {
@@ -78,7 +87,6 @@ in
         age = {
           inherit (config.sops.age) keyFile;
         };
-        defaultSopsFile = ./secrets.yaml;
       };
 
       networking = {
@@ -86,13 +94,41 @@ in
         interfaces.${macvlan} = {
           useDHCP = true;
         };
+        firewall.allowedTCPPorts = [
+          80 # http
+          443 # https
+        ];
       };
 
       security = {
         apparmor.enable = true;
         pki.certificates = [
-          (builtins.readFile resources.ca.cert.root)
+          (builtins.readFile assets.ca.root)
         ];
+        acme = {
+          acceptTerms = true;
+          defaults = {
+            server = "https://ca.home.arpa/acme/acme/directory";
+            email = "acme@scequ.com";
+            validMinDays = 1;
+            renewInterval = "hourly";
+            group = "nginx";
+          };
+        };
+      };
+
+      services.nginx = {
+        enable = true;
+        recommendedOptimisation = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings = true;
+        recommendedGzipSettings = true;
+
+        virtualHosts = {
+          "_" = {
+            locations."/".return = "404";
+          };
+        };
       };
 
       time = {
