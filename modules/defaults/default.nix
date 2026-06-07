@@ -1,14 +1,10 @@
 {
-  resources,
-  inputs,
   lib,
   pkgs,
   ...
 }:
 {
-  imports = with inputs; [
-    stylix.nixosModules.stylix
-
+  imports = [
     ./bash.nix
     ./fish.nix
     ./yazi.nix
@@ -25,6 +21,4 @@
   security.sudo-rs = {
     extraConfig = lib.mkDefault "Defaults pwfeedback";
   };
-
-  stylix.base16Scheme = lib.mkDefault resources.palette.hephae-soft;
 }
