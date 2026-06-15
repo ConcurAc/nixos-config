@@ -23,23 +23,23 @@ in
           ];
           plugin.prepend_previewers = [
             {
-              name = "*.md";
+              mime = "text/markdown";
               run = "rich-preview";
             }
             {
-              name = "*.csv";
+              mime = "text/csv";
               run = "rich-preview";
             }
             {
-              name = "*.json";
+              mime = "application/json";
               run = "rich-preview";
             }
             {
-              name = "*.rst";
+              mime = "text/x-rst";
               run = "rich-preview";
             }
             {
-              name = "*.ipynb";
+              mime = "application/x-ipynb+json";
               run = "rich-preview";
             }
           ];
