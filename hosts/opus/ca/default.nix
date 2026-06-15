@@ -29,15 +29,16 @@ in
     };
 
     config = {
+      _module.args = {
+        inherit assets;
+      };
+
       imports = [
         inputs.sops-nix.nixosModules.sops
 
         ./configuration.nix
       ];
 
-      _module.args = {
-        inherit assets;
-      };
 
       sops = {
         age = {
