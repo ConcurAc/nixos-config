@@ -74,6 +74,7 @@ in
   users.users.root.hashedPasswordFile = secrets."passwd".path;
 
   security = {
+    sudo-rs.enable = true;
     pki.certificates = [
       (builtins.readFile assets.ca.root)
     ];
@@ -126,6 +127,7 @@ in
     #     xwayland.enable = true;
     #   };
     # };
+    openssh.enable = true;
     displayManager.cosmic-greeter.enable = true;
   };
 
