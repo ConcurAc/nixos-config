@@ -30,6 +30,17 @@
         "noatime"
       ];
     };
+    "/var/lib/comfyui" = {
+      device = "/dev/disk/by-label/Collection";
+      fsType = "btrfs";
+      options = [
+        "x-systemd.mount-timeout=25s"
+        "subvol=share/@comfyui"
+        "compress=zstd"
+        "nofail"
+        "noatime"
+      ];
+    };
     "/srv/ai" = {
       device = "/dev/disk/by-label/Collection";
       fsType = "btrfs";
