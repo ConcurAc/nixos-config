@@ -74,6 +74,8 @@ in
         ./photos.nix
         ./kiosk.nix
 
+        ./games.nix
+
         ./recipes.nix
       ];
 

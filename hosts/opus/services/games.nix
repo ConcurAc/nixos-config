@@ -10,6 +10,7 @@ in
     "retrom.json" = {
       sopsFile = secrets/retrom.json;
       key = "";
+      format = "json";
       owner = config.services.retrom.user;
       group = config.services.retrom.group;
     };
