@@ -38,6 +38,7 @@ in
   features = {
     development = {
       enable = lib.mkDefault true;
+      nix = lib.mkDefault true;
     };
     gaming = {
       enable = lib.mkDefault true;
