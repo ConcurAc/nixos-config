@@ -58,6 +58,8 @@ in
     config = {
       imports = with inputs; [
         sops-nix.nixosModules.sops
+
+        comfyui-nix.nixosModules.default
         retrom.nixosModules.retrom
 
         ./passwords.nix
@@ -65,6 +67,7 @@ in
         ./search.nix
         ./llama.nix
         ./llm.nix
+        ./gen.nix
 
         ./media.nix
 

@@ -9,9 +9,12 @@ in
     enable = true;
     enableManager = true;
     gpuSupport = "rocm";
-    extraArgs = [ "--lowvram" ];
+    extraArgs = [
+      "--lowvram"
+      "--disable-xformers"
+    ];
     environment = {
-      HF_HOME="/srv/ai/huggingface";
+      HF_HOME = "/srv/ai/huggingface";
     };
   };
 

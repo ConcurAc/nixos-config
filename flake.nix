@@ -27,10 +27,8 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    retrom = {
-      url = "github:JMBeresford/retrom/latest";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    comfyui-nix.url = "github:utensils/comfyui-nix";
+    retrom.url = "github:JMBeresford/retrom/latest";
     nix-minecraft = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
