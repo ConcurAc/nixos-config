@@ -13,6 +13,7 @@ in
     defaults
     setup
     features
+    user-containers
 
     ./secrets
     ./system.nix
@@ -21,7 +22,6 @@ in
     ./ca
     ./services
     ./scequ.com
-    ../../modules/user-containers.nix
   ];
 
   nix = {
@@ -71,7 +71,25 @@ in
 
   boot.plymouth.enable = true;
 
-  users.users.root.hashedPasswordFile = secrets."passwd".path;
+  users = {
+    users.root.hashedPasswordFile = secrets."passwd".path;
+
+    containers = {
+      enable = true;
+      interface = "br-vlan100";
+      withGPU = true;
+      allowedDevices = [
+        {
+          node = "/dev/dri/renderD128";
+          modifier = "rw";
+        }
+        {
+          node = "/dev/dri/renderD129";
+          modifier = "rw";
+        }
+      ];
+    };
+  };
 
   security = {
     sudo-rs.enable = true;
@@ -163,22 +181,6 @@ in
   stylix = {
     enable = true;
     base16Scheme = assets.palette.hephae-soft;
-  };
-
-  user-containers = {
-    enable = true;
-    interface = "br-vlan100";
-    withGPU = true;
-    allowedDevices = [
-      {
-        node = "/dev/dri/renderD128";
-        modifier = "rw";
-      }
-      {
-        node = "/dev/dri/renderD129";
-        modifier = "rw";
-      }
-    ];
   };
 
   system.stateVersion = "25.05";

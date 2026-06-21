@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.user-containers;
+  cfg = config.users.containers;
 in
 {
-  options.user-containers = with lib; {
+  options.users.containers = with lib; {
     enable = mkEnableOption "Enables container based services.";
     interface = mkOption {
       type = types.str;

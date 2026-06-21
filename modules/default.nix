@@ -4,5 +4,5 @@
   setup = ./setup;
   features = ./features;
 
-  user-containers = ./user-containers.nix;
+  user-containers = ./users/containers.nix;
 }
