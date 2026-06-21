@@ -121,9 +121,22 @@ in
   };
 
   services = {
-    # desktopManager = {
-    #   cosmic = {
-    #     enable = true;
+    kanidm = {
+      package = pkgs.kanidm_1_10;
+      client = {
+        enable = true;
+        settings.uri = "https://id.home.arpa";
+      };
+
+      unix = {
+        enable = true;
+        settings = {
+          kanidm.pam_allowed_login_groups = [ "users" ];
+          sshIntegration = true;
+        };
+      };
+    };
+
     #     xwayland.enable = true;
     #   };
     # };
