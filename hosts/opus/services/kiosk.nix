@@ -9,13 +9,9 @@ in
   sops.secrets = {
     "immich/api-keys/connor" = {
       sopsFile = secrets/immich.yaml;
-      owner = "immich-kiosk";
-      group = "immich-kiosk";
     };
     "immich/api-keys/arete" = {
       sopsFile = secrets/immich.yaml;
-      owner = "immich-kiosk";
-      group = "immich-kiosk";
     };
   };
 
