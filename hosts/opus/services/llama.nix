@@ -16,7 +16,7 @@ in
     settings =
       let
         port = "\${PORT}";
-        server = "${lib.getExe' pkgs.llama-cpp-rocm "llama-server"} --port ${port} --jinja --no-webui --offline";
+        server = "${lib.getExe' pkgs.llama-cpp-rocm "llama-server"} --port ${port} --no-ui --offline";
         env = [
           "LLAMA_CACHE=/srv/ai/huggingface/hub"
         ];
