@@ -62,6 +62,8 @@ in
         comfyui-nix.nixosModules.default
         retrom.nixosModules.retrom
 
+        ./id.nix
+        ./cloud.nix
         ./passwords.nix
 
         ./search.nix
@@ -76,6 +78,7 @@ in
 
         ./games.nix
 
+        ./knowledge.nix
         ./recipes.nix
       ];
 
@@ -84,6 +87,7 @@ in
           pkg:
           builtins.elem (lib.getName pkg) [
             "open-webui"
+            "outline"
           ];
         rocmSupport = true;
       };
