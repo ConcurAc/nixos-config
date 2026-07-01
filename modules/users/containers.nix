@@ -13,7 +13,8 @@ in
       type = types.str;
       description = "The physical network interface for the containers.";
     };
-    withGPU = mkEnableOption "Pass gpu through to container.";
+    withGpu = mkEnableOption "Pass gpu through to containers.";
+    withInput = mkEnableOption "Pass uinput through to containers.";
     allowedDevices = mkOption {
       type = types.anything;
       default = [ ];
@@ -24,16 +25,16 @@ in
         types.submodule {
           options = {
             enable = mkEnableOption "Enable this user's container.";
-            withGPU = mkOption {
+            withGpu = mkOption {
               type = types.bool;
               description = "Pass gpu through to container";
-              default = config.user-containers.withGPU;
-              defaultText = lib.literalString "config.user-containers.withGPU";
+              default = config.users.containers.withGpu;
+              defaultText = lib.literalString "config.users.containers.withGpu";
             };
-            bindMounts = mkOption {
+            overrides = mkOption {
               type = types.anything;
               default = { };
-              description = "Extra bind mounts for container";
+              description = "Overrides for container configuration.";
             };
             config = mkOption {
               type = types.anything;
@@ -51,45 +52,45 @@ in
       name: container:
       let
         cfgUser = config.users.users.${name};
-      in
-      (lib.mkIf container.enable {
-        inherit (cfg) allowedDevices;
+        base = {
+          inherit (cfg) allowedDevices;
 
-        autoStart = true;
-        privateNetwork = true;
+          autoStart = true;
+          privateNetwork = true;
 
-        macvlans = [ cfg.interface ];
+          macvlans = [ cfg.interface ];
 
-        bindMounts = {
-          ${cfgUser.hashedPasswordFile}.hostPath = lib.mkIf (
-            !isNull cfgUser.hashedPasswordFile
-          ) cfgUser.hashedPasswordFile;
-          "/dev/dri" = lib.mkIf container.withGPU {
-            hostPath = "/dev/dri";
-            isReadOnly = false;
-          };
-        }
-        // container.bindMounts;
-
-        config = {
-          system = {
-            inherit (config.system) stateVersion;
+          bindMounts = {
+            ${cfgUser.hashedPasswordFile}.hostPath = lib.mkIf (
+              !isNull cfgUser.hashedPasswordFile
+            ) cfgUser.hashedPasswordFile;
+            "/dev/dri" = lib.mkIf container.withGpu {
+              hostPath = "/dev/dri";
+              isReadOnly = false;
+            };
           };
 
-          imports = [ container.config ];
+          config = {
+            system = {
+              inherit (config.system) stateVersion;
+            };
 
-          users = {
-            users.${name} = cfgUser;
-            mutableUsers = false;
-          };
+            imports = [ container.config ];
 
-          networking.interfaces = {
-            "mv-${cfg.interface}" = {
-              useDHCP = lib.mkDefault true;
+            users = {
+              users.${name} = cfgUser;
+              mutableUsers = false;
+            };
+
+            networking.interfaces = {
+              "mv-${cfg.interface}" = {
+                useDHCP = lib.mkDefault true;
+              };
             };
           };
         };
-      })
+      in
+      lib.mkIf container.enable (lib.recursiveUpdate base container.overrides)
     ) cfg.users;
   };
 }

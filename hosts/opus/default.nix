@@ -13,7 +13,8 @@ in
     defaults
     setup
     features
-    user-containers
+    users.containers
+    users.files
 
     ./secrets
     ./system.nix
@@ -86,7 +87,6 @@ in
     containers = {
       enable = true;
       interface = "br-vlan100";
-      withGPU = true;
       allowedDevices = [
         {
           node = "/dev/dri/renderD128";

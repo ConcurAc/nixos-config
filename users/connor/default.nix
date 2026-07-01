@@ -1,6 +1,7 @@
 {
-  inputs,
+  assets,
   modules,
+  inputs,
   config,
   lib,
   pkgs,
@@ -13,7 +14,7 @@ in
 {
   imports = with modules; [
     features
-    user-containers
+    users.containers
 
     ./secrets
   ];
@@ -40,21 +41,34 @@ in
 
     containers.users.connor = {
       enable = false;
-      bindMounts = {
-        ${config.sops.age.keyFile}.hostPath = config.sops.age.keyFile;
-        "/home/data".hostPath = "/srv/users/${cfg.name}";
-      };
+      withGpu = true;
+
       config = {
+        _module.args = { inherit assets; };
+
         imports = with inputs; [
           sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
 
+          modules.defaults
+
           ./container
         ];
-        sops.age.keyFile = config.sops.age.keyFile;
+
+        sops.age.keyFile = secrets."connor/age".path;
+
         stylix = {
           enable = true;
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/brewer.yaml";
+          base16Scheme = assets.palette.hephae-soft;
+        };
+
+        programs.fish.enable = true;
+      };
+
+      overrides = {
+        bindMounts = {
+          ${secrets."connor/age".path}.hostPath = secrets."connor/age".path;
+          "/srv/users/${cfg.name}".hostPath = "/srv/users/${cfg.name}";
         };
       };
     };
@@ -70,12 +84,11 @@ in
     };
   };
 
+  programs = {
+    niri.enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     xwayland-satellite
   ];
-
-  programs = {
-    niri.enable = true;
-
-  };
 }
