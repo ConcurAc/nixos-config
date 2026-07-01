@@ -86,6 +86,11 @@ in
   services = {
     openssh.enable = true;
     power-profiles-daemon.enable = true;
+    sunshine = {
+      enable = true;
+      capSysAdmin = true;
+      openFirewall = true;
+    };
   };
 
   stylix = {
