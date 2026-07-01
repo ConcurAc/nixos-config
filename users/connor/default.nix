@@ -29,7 +29,8 @@ in
         "networkmanager"
         "libvirtd"
         "wireshark"
-        "linux_users"
+
+        "games"
       ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkxIAco0SzBIb8nGCL3QerUP7hp/kzv1gkHbmtoBVMp"

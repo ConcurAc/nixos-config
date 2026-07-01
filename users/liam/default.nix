@@ -1,23 +1,17 @@
+{ pkgs, ... }:
 {
-  config,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.users.users.liam;
-in
-{
-  users = {
-    users.liam = {
-      isNormalUser = true;
-      extraGroups = [
-        "networkmanager"
-      ];
-      shell = pkgs.fish;
-      packages = with pkgs; [
-        home-manager
-        brave
-      ];
-    };
+  users.users.liam = {
+    isNormalUser = true;
+    uid = 1002;
+    extraGroups = [
+      "networkmanager"
+
+      "games"
+    ];
+    shell = pkgs.fish;
+    packages = with pkgs; [
+      home-manager
+      brave
+    ];
   };
 }

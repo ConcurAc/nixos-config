@@ -73,6 +73,15 @@ in
 
   users = {
     users.root.hashedPasswordFile = secrets."passwd".path;
+    groups.games = { };
+    files = {
+      enable = true;
+      useFuse = true;
+      overlays.games = {
+        enable = true;
+        group = "games";
+      };
+    };
 
     containers = {
       enable = true;
