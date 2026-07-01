@@ -27,7 +27,10 @@
     config.cudaSupport = true;
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = [
+    "modesetting"
+    "nvidia"
+  ];
 
   hardware = {
     enableRedistributableFirmware = true;
