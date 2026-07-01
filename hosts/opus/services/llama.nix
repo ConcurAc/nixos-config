@@ -16,7 +16,7 @@ in
     settings =
       let
         port = "\${PORT}";
-        server = "${lib.getExe' pkgs.llama-cpp-rocm "llama-server"} --port ${port} --no-ui --offline";
+        server = "${lib.getExe' pkgs.llama-cpp-rocm "llama-server"} --port ${port} --no-ui";
         env = [
           "LLAMA_CACHE=/srv/ai/huggingface/hub"
         ];
@@ -24,16 +24,61 @@ in
       {
         healthCheckTimeout = 60;
         models = {
-          "qwen3.5-9b-uncensored" = {
-            inherit env;
-            cmd = "${server} -hf HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0 -c 128000";
-            checkEndpoint = "none"; # don't timeout download
-          };
-          "gemma-4-e4b-uncensored" = {
-            inherit env;
-            cmd = "${server} -hf HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive:Q5_K_M -c 128000";
-            checkEndpoint = "none"; # don't timeout download
-          };
+          "qwen3.5-9b-uncensored" =
+            let
+              context = 128000;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0 -c ${toString context}";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
+          "gemma-4-e4b-uncensored" =
+            let
+              context = 128000;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive:Q5_K_M -c ${toString context}";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
+                  "audio"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
+          "qwopus3.5-9b-coder-mtp" =
+            let
+              context = 128000;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf Jackrong/Qwopus3.5-9B-Coder-MTP-GGUF:Q6_K -c ${toString context}";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
         };
       };
   };
