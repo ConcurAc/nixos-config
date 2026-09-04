@@ -78,6 +78,14 @@ in
     files = {
       enable = true;
       useFuse = true;
+      requires = [
+        "srv-share-games.mount"
+        "srv-users.mount"
+      ];
+      after = [
+        "srv-share-games.mount"
+        "srv-users.mount"
+      ];
       overlays.games = {
         enable = true;
         group = "games";
