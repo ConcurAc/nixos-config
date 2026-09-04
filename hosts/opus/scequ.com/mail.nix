@@ -68,6 +68,11 @@ in
           settings = {
             server = {
               hostname = fqdn;
+              allowed_ip = [
+                "192.168.1.1/24"
+                "172.16.10.10"
+              ];
+              proxy.trusted-networks = [ "172.16.10.10" ];
               listener = {
                 smtp = {
                   bind = "[::]:25";
@@ -99,18 +104,18 @@ in
               directory = "internal";
             };
 
+            directory = {
+              internal = {
+                type = "internal";
+                store = "rocksdb";
+              };
+            };
+
             store = {
               rocksdb = {
                 type = "rocksdb";
                 path = "${cfg.services.stalwart.dataDir}/data";
                 compression = "lz4";
-              };
-            };
-
-            directory = {
-              internal = {
-                type = "internal";
-                store = "rocksdb";
               };
             };
 

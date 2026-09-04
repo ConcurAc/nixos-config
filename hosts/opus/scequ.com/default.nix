@@ -125,7 +125,7 @@ in
 
             backend mail.${fqdn}_ssl
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:443 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:443 check init-addr last,none resolvers gateway send-proxy-v2
 
             frontend forward_smtp
               bind :25
@@ -136,7 +136,7 @@ in
 
             backend mail.${fqdn}_smtp
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:25 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:25 check init-addr last,none resolvers gateway send-proxy-v2
 
             frontend forward_submissions
               bind :465
@@ -148,7 +148,7 @@ in
 
             backend mail.${fqdn}_submissions
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:465 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:465 check init-addr last,none resolvers gateway send-proxy-v2
 
             frontend forward_imaps
               bind :993
@@ -160,7 +160,7 @@ in
 
             backend mail.${fqdn}_imaps
               mode tcp
-              server mail.${fqdn} mail.${fqdn}:993 check init-addr last,none resolvers gateway
+              server mail.${fqdn} mail.${fqdn}:993 check init-addr last,none resolvers gateway send-proxy-v2
           '';
         };
       };
