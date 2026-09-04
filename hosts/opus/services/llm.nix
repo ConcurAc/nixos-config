@@ -78,6 +78,6 @@ in
       "admins" = [ "open-webui-admin" ];
       "users" = [ "open-webui-user" ];
     };
-    imageFile = "${pkgs.open-webui}/lib/python3.13/site-packages/open_webui/static/favicon.svg";
+    imageFile = "${pkgs.open-webui}/lib/python3.14/site-packages/open_webui/static/favicon.svg";
   };
 }
