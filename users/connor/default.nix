@@ -28,6 +28,7 @@ in
       extraGroups = [
         "wheel"
         "networkmanager"
+        "dialout"
         "libvirtd"
         "wireshark"
 
