@@ -42,7 +42,7 @@ in
     };
 
     containers.users.connor = {
-      enable = false;
+      enable = true;
       withGpu = true;
 
       config = {
