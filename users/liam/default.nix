@@ -5,6 +5,7 @@
     uid = 1002;
     extraGroups = [
       "networkmanager"
+      "gamemode"
 
       "games"
     ];

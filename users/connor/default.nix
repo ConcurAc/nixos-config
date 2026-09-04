@@ -29,6 +29,7 @@ in
         "wheel"
         "networkmanager"
         "dialout"
+        "gamemode"
         "libvirtd"
         "wireshark"
 
