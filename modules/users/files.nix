@@ -13,7 +13,10 @@ let
       normal = lib.filterAttrs (_: u: u.isNormalUser) config.users.users;
     in
     builtins.listToAttrs (
-      map (u: { name = u.name; value = u; }) (lib.attrValues normal)
+      map (u: {
+        name = u.name;
+        value = u;
+      }) (lib.attrValues normal)
     );
 
   userNames = lib.attrNames allUsersByName;
@@ -42,9 +45,7 @@ let
   overlaysFor =
     userName:
     lib.filterAttrs (
-      _: o:
-      inGroup userName o.group
-      && lib.all (g: inGroup userName g) o.requiredGroups
+      _: o: inGroup userName o.group && lib.all (g: inGroup userName g) o.requiredGroups
     ) enabledOverlays;
 
   # Flat list of every (user, overlay) pair that needs a mount.
@@ -63,12 +64,12 @@ let
   # Path layout helpers. Mount-scoped helpers take the ctx record from allMounts.
   # share and user are called outside a mount context so take plain strings.
   paths = {
-    user    = u:                          "${cfg.usersDir}/${u}";
-    share   = s:                          "${cfg.shareDir}/${s}";
+    user = u: "${cfg.usersDir}/${u}";
+    share = s: "${cfg.shareDir}/${s}";
     overlay = { userName, shareName, ... }: "${cfg.usersDir}/${userName}/.overlay/${shareName}";
-    upper   = { userName, shareName, ... }: "${cfg.usersDir}/${userName}/.overlay/${shareName}/upper";
-    work    = { userName, shareName, ... }: "${cfg.usersDir}/${userName}/.overlay/${shareName}/work";
-    merge   = { userName, overlay,   ... }: "${cfg.usersDir}/${userName}/${overlay.mountPoint}";
+    upper = { userName, shareName, ... }: "${cfg.usersDir}/${userName}/.overlay/${shareName}/upper";
+    work = { userName, shareName, ... }: "${cfg.usersDir}/${userName}/.overlay/${shareName}/work";
+    merge = { userName, overlay, ... }: "${cfg.usersDir}/${userName}/${overlay.mountPoint}";
   };
 
   primaryGroup = u: (allUsersByName.${u} or config.users.users.${u}).group;
@@ -77,7 +78,12 @@ let
   # allow_other is FUSE-only and must be omitted when PAM mounts on login
   # (PAM already runs as the target user, so the kernel option is irrelevant).
   mkOptions =
-    ctx@{ userName, shareName, overlay, ... }:
+    ctx@{
+      userName,
+      shareName,
+      overlay,
+      ...
+    }:
     let
       dirs = [
         "lowerdir=${paths.share shareName}"
@@ -95,60 +101,67 @@ let
   mkVolumeEntry =
     ctx@{ userName, shareName, ... }:
     let
-      mp   = paths.merge ctx;
+      mp = paths.merge ctx;
       opts = mkOptions ctx;
     in
-    if cfg.useFuse then ''
-      <volume
-        user="${userName}"
-        fstype="fuse"
-        path="fuse-overlayfs#${paths.share shareName}"
-        mountpoint="${mp}"
-        options="${opts}"
-      />''
-    else ''
-      <volume
-        user="${userName}"
-        fstype="overlay"
-        path="overlay"
-        mountpoint="${mp}"
-        options="${opts}"
-      />'';
+    if cfg.useFuse then
+      ''
+        <volume
+          user="${userName}"
+          fstype="fuse"
+          path="fuse-overlayfs#${paths.share shareName}"
+          mountpoint="${mp}"
+          options="${opts}"
+        />''
+    else
+      ''
+        <volume
+          user="${userName}"
+          fstype="overlay"
+          path="overlay"
+          mountpoint="${mp}"
+          options="${opts}"
+        />'';
 
   # One systemd .mount unit per (user, overlay) pair for kernel overlayfs.
   mkMountUnit =
     ctx@{ userName, ... }:
     {
-      what    = "overlay";
-      where   = paths.merge ctx;
-      type    = "overlay";
+      what = "overlay";
+      where = paths.merge ctx;
+      type = "overlay";
       options = mkOptions ctx;
-      after    = [ "systemd-tmpfiles-setup.service" ];
+      after = [ "systemd-tmpfiles-setup.service" ];
       requires = [ "systemd-tmpfiles-setup.service" ];
       wantedBy = [ "multi-user.target" ];
-      users    = [ userName ];
+      users = [ userName ];
     };
 
   # One oneshot service per (user, overlay) pair for FUSE overlayfs.
   mkFuseService =
-    ctx@{ userName, groupName, shareName, ... }:
+    ctx@{
+      userName,
+      groupName,
+      shareName,
+      ...
+    }:
     let
       name = "fuse-overlay-${userName}-${shareName}";
     in
     {
       ${name} = {
         description = "FUSE overlay for ${userName} on ${shareName}";
-        after    = [ "systemd-tmpfiles-setup.service" ];
-        requires = [ "systemd-tmpfiles-setup.service" ];
-        before   = [ "multi-user.target" ];
+        after = [ "systemd-tmpfiles-setup.service" ] ++ cfg.after;
+        requires = [ "systemd-tmpfiles-setup.service" ] ++ cfg.requires;
+        before = [ "multi-user.target" ];
         wantedBy = [ "multi-user.target" ];
 
         serviceConfig = {
-          Type             = "oneshot";
-          RemainAfterExit  = true;
+          Type = "oneshot";
+          RemainAfterExit = true;
           ExecStart = "${lib.getExe pkgs.fuse-overlayfs} -o ${mkOptions ctx} ${paths.merge ctx}";
-          ExecStop  = "${lib.getExe' pkgs.fuse3 "fusermount3"} -u ${paths.merge ctx}";
-          User  = userName;
+          ExecStop = "${lib.getExe' pkgs.fuse3 "fusermount3"} -u ${paths.merge ctx}";
+          User = userName;
           Group = groupName;
         };
       };
@@ -160,7 +173,7 @@ in
     enable = lib.mkEnableOption "per-user overlay filesystem setup";
 
     shareDir = lib.mkOption {
-      type    = lib.types.str;
+      type = lib.types.str;
       default = "/srv/share";
       description = ''
         Root of shared lower-layer content. Each enabled overlay uses
@@ -169,7 +182,7 @@ in
     };
 
     usersDir = lib.mkOption {
-      type    = lib.types.str;
+      type = lib.types.str;
       default = "/srv/users";
       description = ''
         Root of per-user directories. A user "alice" gets /srv/users/alice
@@ -189,8 +202,20 @@ in
       user at the cost of higher I/O overhead.
     '';
 
+    requires = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Systemd units this depends on.";
+    };
+
+    after = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Systemd units this should run after.";
+    };
+
     overlays = lib.mkOption {
-      default     = { };
+      default = { };
       description = ''
         Attribute set of content groups. The key is the overlay name, used as
         the lower-directory name and default mount point.
@@ -212,26 +237,26 @@ in
               enable = lib.mkEnableOption "this overlay";
 
               group = lib.mkOption {
-                type        = lib.types.str;
-                default     = name;
+                type = lib.types.str;
+                default = name;
                 description = "Primary Unix group controlling access to this overlay.";
               };
 
               requiredGroups = lib.mkOption {
-                type        = lib.types.listOf lib.types.str;
-                default     = [ ];
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
                 description = "Additional groups a user must belong to.";
               };
 
               extraOptions = lib.mkOption {
-                type        = lib.types.listOf lib.types.str;
-                default     = [ ];
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
                 description = "Extra options appended to the mount command.";
               };
 
               mountPoint = lib.mkOption {
-                type        = lib.types.str;
-                default     = name;
+                type = lib.types.str;
+                default = name;
                 description = "Directory created under the user's dir for this overlay.";
               };
             };
@@ -245,23 +270,20 @@ in
     assertions = [
       # Catch typos in group names before they silently produce no mounts.
       {
-        assertion = lib.all
-          (o: config.users.groups ? ${o.group})
-          (lib.attrValues enabledOverlays);
+        assertion = lib.all (o: config.users.groups ? ${o.group}) (lib.attrValues enabledOverlays);
         message =
           "users.files: overlay references unknown group(s): "
           + lib.concatStringsSep ", " (
-            lib.filter
-              (n: !(config.users.groups ? ${(enabledOverlays.${n}).group}))
-              (lib.attrNames enabledOverlays)
+            lib.filter (n: !(config.users.groups ? ${(enabledOverlays.${n}).group})) (
+              lib.attrNames enabledOverlays
+            )
           );
       }
       {
-        assertion = lib.all (o:
-          lib.all (g: config.users.groups ? ${g}) o.requiredGroups
-        ) (lib.attrValues enabledOverlays);
-        message =
-          "users.files: overlay requiredGroups references unknown group(s)";
+        assertion = lib.all (o: lib.all (g: config.users.groups ? ${g}) o.requiredGroups) (
+          lib.attrValues enabledOverlays
+        );
+        message = "users.files: overlay requiredGroups references unknown group(s)";
       }
       # uid is required by fuse-overlayfs's squash_to_uid option.
       {
@@ -284,31 +306,33 @@ in
       ++ lib.flatten (
         map (
           ctx@{ userName, groupName, ... }:
-          let userGroup = primaryGroup userName; in
+          let
+            userGroup = primaryGroup userName;
+          in
           [
             "d ${paths.overlay ctx} 0700 ${userName} ${userGroup} -"
-            "d ${paths.upper   ctx} 0700 ${userName} ${userGroup} -"
-            "d ${paths.work    ctx} 0700 ${userName} ${userGroup} -"
-            "d ${paths.merge   ctx} 0750 ${userName} ${groupName} -"
+            "d ${paths.upper ctx} 0700 ${userName} ${userGroup} -"
+            "d ${paths.work ctx} 0700 ${userName} ${userGroup} -"
+            "d ${paths.merge ctx} 0750 ${userName} ${groupName} -"
           ]
         ) allMounts
       )
     );
 
-    systemd.mounts = lib.optionals (!cfg.usePam && !cfg.useFuse)
-      (map mkMountUnit allMounts);
+    systemd.mounts = lib.optionals (!cfg.usePam && !cfg.useFuse) (map mkMountUnit allMounts);
 
-    systemd.services = lib.mkIf (!cfg.usePam && cfg.useFuse)
-      (lib.mkMerge (map mkFuseService allMounts));
+    systemd.services = lib.mkIf (!cfg.usePam && cfg.useFuse) (
+      lib.mkMerge (map mkFuseService allMounts)
+    );
 
     security.pam.mount = lib.mkIf cfg.usePam {
-      enable             = true;
-      extraVolumes       = map mkVolumeEntry allMounts;
+      enable = true;
+      extraVolumes = map mkVolumeEntry allMounts;
       additionalSearchPaths = lib.optional cfg.useFuse pkgs.fuse-overlayfs;
     };
 
     programs.fuse = {
-      enable        = cfg.useFuse;
+      enable = cfg.useFuse;
       userAllowOther = lib.mkDefault (!cfg.usePam && cfg.useFuse);
     };
   };
