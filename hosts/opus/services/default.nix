@@ -80,6 +80,8 @@ in
 
         ./knowledge.nix
         ./recipes.nix
+
+        ./torrent.nix
       ];
 
       nixpkgs.config = {
