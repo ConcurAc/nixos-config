@@ -20,6 +20,8 @@ in
 
     privateNetwork = true;
 
+    timeoutStartSec = "5min";
+
     macvlans = [ interface ];
 
     bindMounts = {
