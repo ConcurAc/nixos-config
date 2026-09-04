@@ -24,19 +24,58 @@ in
       {
         healthCheckTimeout = 60;
         models = {
-          "qwen3.5-9b-uncensored" =
+          "gemma-4-e4b" =
             let
               context = 128000;
             in
             {
               inherit env;
-              cmd = "${server} -hf HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0 -c ${toString context}";
+              cmd = "${server} -hf unsloth/gemma-4-E4B-it-GGUF:Q8_0 -c ${toString context} --cache-ram 0";
               checkEndpoint = "none"; # don't timeout download
               capabilities = {
                 inherit context;
                 "in" = [
                   "text"
                   "image"
+                  "audio"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
+          "gemma-4-12b" =
+            let
+              context = 262144;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf unsloth/gemma-4-12B-it-GGUF:Q8_0 -c ${toString context} --cache-ram 0";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
+                  "audio"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
+          "gemma-4-12b-qat" =
+            let
+              context = 262144;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf unsloth/gemma-4-12B-it-qat-GGUF:UD-Q4_K_XL -c ${toString context} --cache-ram 0";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
+                  "audio"
                 ];
                 "out" = [ "text" ];
                 "tools" = true;
@@ -56,6 +95,24 @@ in
                   "text"
                   "image"
                   "audio"
+                ];
+                "out" = [ "text" ];
+                "tools" = true;
+              };
+            };
+          "qwen3.5-9b-uncensored" =
+            let
+              context = 128000;
+            in
+            {
+              inherit env;
+              cmd = "${server} -hf HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0 -c ${toString context}";
+              checkEndpoint = "none"; # don't timeout download
+              capabilities = {
+                inherit context;
+                "in" = [
+                  "text"
+                  "image"
                 ];
                 "out" = [ "text" ];
                 "tools" = true;
