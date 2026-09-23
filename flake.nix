@@ -29,10 +29,6 @@
     };
     comfyui-nix.url = "github:utensils/comfyui-nix";
     retrom.url = "github:JMBeresford/retrom";
-    amm = {
-      url = "github:ChrisDKN/Amethyst-Mod-Manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -41,7 +37,6 @@
       sops-nix,
       disko,
       stylix,
-      amm,
       ...
     }:
     let
