@@ -53,9 +53,7 @@ in
             }
           ]
           ++ lib.optional withUdisks {
-            on = [
-              "M"
-            ];
+            on = "M";
             run = "plugin mount";
             desc = "mount drives";
           };
