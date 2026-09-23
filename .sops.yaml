@@ -16,7 +16,7 @@ creation_rules:
           - age:
                 - *connor
                 - *effigy
-    - path_regex: hosts/opus/(.*/)?secrets/[^/]+\.(yaml|json|env)$
+    - path_regex: hosts/opus/(.*/)?secrets/[^/]+\.(yaml|json|env|conf)$
       key_groups:
           - age:
                 - *connor
