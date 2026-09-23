@@ -172,27 +172,15 @@ in
       };
     };
 
-    #     xwayland.enable = true;
-    #   };
-    # };
     openssh.enable = true;
     displayManager.cosmic-greeter.enable = true;
   };
 
-  virtualisation = {
-    podman = {
-      enable = true;
-      dockerCompat = true;
-      dockerSocket.enable = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-    libvirtd = {
-      enable = true;
-      qemu = {
-        swtpm.enable = true;
-        runAsRoot = false;
-      };
-    };
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    dockerSocket.enable = true;
+    defaultNetwork.settings.dns_enabled = true;
   };
 
   stylix = {
