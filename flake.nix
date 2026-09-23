@@ -28,13 +28,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     comfyui-nix.url = "github:utensils/comfyui-nix";
-    retrom.url = "github:JMBeresford/retrom/latest";
-    nix-minecraft = {
-      url = "github:Infinidoge/nix-minecraft";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-citizen = {
-      url = "github:LovingMelody/nix-citizen";
+    retrom.url = "github:JMBeresford/retrom";
+    amm = {
+      url = "github:ChrisDKN/Amethyst-Mod-Manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -45,6 +41,7 @@
       sops-nix,
       disko,
       stylix,
+      amm,
       ...
     }:
     let
