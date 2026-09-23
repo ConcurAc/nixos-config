@@ -78,6 +78,7 @@
 
             users.connor
             users.liam
+            users.kendrick
           ];
         };
 

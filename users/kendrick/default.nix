@@ -6,6 +6,7 @@
     extraGroups = [
       "networkmanager"
     ];
+    shell = pkgs.fish;
     packages = with pkgs; [
       home-manager
     ];
