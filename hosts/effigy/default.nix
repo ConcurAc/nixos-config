@@ -2,6 +2,7 @@
   assets,
   modules,
   config,
+  pkgs,
   ...
 }:
 let
@@ -88,8 +89,22 @@ in
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    vulkan-tools
+    hwdata
+  ];
+
   programs = {
     nix-ld.enable = true;
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+      enableWsi = true;
+    };
+    gamemode = {
+      enable = true;
+      enableRenice = true;
+    };
   };
 
   services = {
