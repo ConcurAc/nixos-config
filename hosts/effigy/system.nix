@@ -27,6 +27,10 @@
     config.cudaSupport = true;
   };
 
+  environment.systemPackages = with pkgs; [
+    sbctl
+  ];
+
   services.xserver.videoDrivers = [
     "modesetting"
     "nvidia"
@@ -86,11 +90,12 @@
     kernelParams = [ "quiet" ];
 
     loader = {
-      grub = {
-        device = "nodev";
-        efiSupport = true;
-      };
+      systemd-boot.enable = lib.mkForce false;
       efi.canTouchEfiVariables = true;
+    };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
     };
 
     tmp.useZram = true;

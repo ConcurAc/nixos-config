@@ -15,12 +15,16 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix = {
@@ -36,6 +40,7 @@
       nixpkgs,
       sops-nix,
       disko,
+      lanzaboote,
       stylix,
       ...
     }:
@@ -54,6 +59,7 @@
           modules = [
             sops-nix.nixosModules.sops
             disko.nixosModules.disko
+            lanzaboote.nixosModules.lanzaboote
             stylix.nixosModules.stylix
 
             ./hosts/effigy
