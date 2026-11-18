@@ -32,7 +32,7 @@ in
   users.users.kanidm.extraGroups = [ "nginx" ];
 
   services.kanidm = {
-    package = pkgs.kanidmWithSecretProvisioning_1_11;
+    package = pkgs.kanidmWithSecretProvisioning_1_12;
 
     server = {
       enable = true;
@@ -42,16 +42,19 @@ in
         http_client_address_info.x-forward-for = [ "127.0.0.1" ];
         tls_chain = "${acmeDir}/fullchain.pem";
         tls_key = "${acmeDir}/key.pem";
+        online_backup = {
+          path = "/var/lib/kanidm/backups/";
+          # every day at 22:00 UTC (default)
+          schedule = "00 22 * * *";
+        };
       };
     };
 
     provision = {
       enable = true;
-      autoRemove = false;
+      autoRemove = true; # manage users and groups imperatively
       adminPasswordFile = secrets."kanidm/admin-password".path;
       idmAdminPasswordFile = secrets."kanidm/idm-admin-password".path;
-      groups."users" = { };
-      groups."admins" = { };
     };
   };
 

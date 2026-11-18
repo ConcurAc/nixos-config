@@ -20,6 +20,7 @@ in
 
   services.opencloud = {
     enable = true;
+    package = pkgs.opencloud;
     url = "https://cloud.home.arpa";
 
     settings = {

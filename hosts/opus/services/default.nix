@@ -58,6 +58,15 @@ in
     ];
 
     config = {
+      nixpkgs.config = {
+        allowUnfreePredicate =
+          pkg:
+          builtins.elem (lib.getName pkg) [
+            "open-webui"
+          ];
+        rocmSupport = true;
+      };
+
       imports = with inputs; [
         sops-nix.nixosModules.sops
 
@@ -71,30 +80,18 @@ in
         ./search.nix
         ./llama.nix
         ./llm.nix
-        ./gen.nix
-
-        ./media.nix
 
         ./photos.nix
         ./kiosk.nix
 
         ./games.nix
 
-        ./knowledge.nix
+        ./media.nix
+        ./library.nix
         ./recipes.nix
 
         ./torrent.nix
       ];
-
-      nixpkgs.config = {
-        allowUnfreePredicate =
-          pkg:
-          builtins.elem (lib.getName pkg) [
-            "open-webui"
-            "outline"
-          ];
-        rocmSupport = true;
-      };
 
       sops = {
         age = {
@@ -156,5 +153,10 @@ in
         inherit (config.system) stateVersion;
       };
     };
+  };
+
+  systemd.services."container@${hostName}" = {
+    requires = [ "srv-archives.mount" ];
+    after = [ "srv-archives.mount" ];
   };
 }

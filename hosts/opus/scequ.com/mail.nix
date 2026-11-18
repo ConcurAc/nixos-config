@@ -83,6 +83,10 @@ in
                   protocol = "smtp";
                   tls.implicit = true;
                 };
+                starttls = {
+                  bind = "[::]:587";
+                  protocol = "smtp";
+                };
                 imaps = {
                   bind = "[::]:993";
                   protocol = "imap";

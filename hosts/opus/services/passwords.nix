@@ -11,12 +11,6 @@ in
       owner = "vaultwarden";
       group = "vaultwarden";
     };
-    "kanidm/oauth2/vaultwarden" = {
-      sopsFile = ./secrets/oauth2.yaml;
-      key = "oauth2/vaultwarden";
-      owner = "kanidm";
-      group = "kanidm";
-    };
   };
 
   services.vaultwarden = {
@@ -45,7 +39,6 @@ in
     public = true;
     originUrl = "https://passwords.home.arpa/identity/connect/oidc-signin";
     originLanding = "https://passwords.home.arpa";
-    basicSecretFile = secrets."kanidm/oauth2/vaultwarden".path;
     preferShortUsername = true;
     scopeMaps."users" = [
       "openid"
