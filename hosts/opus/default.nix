@@ -22,6 +22,7 @@ in
     ./exports.nix
     ./ca
     ./services
+    ./music
     ./scequ.com
   ];
 
