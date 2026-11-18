@@ -24,9 +24,6 @@ in
   sops.secrets = {
     "kanidm/admin-password" = kanidmSecret;
     "kanidm/idm-admin-password" = kanidmSecret;
-    "kanidm/oauth2/stalwart" = oauth2Secret // {
-      key = "oauth2/stalwart";
-    };
   };
 
   users.users.kanidm.extraGroups = [ "nginx" ];
